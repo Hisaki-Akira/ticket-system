@@ -23,7 +23,7 @@ export default function BoardingPass({ ticket, flight }: BoardingPassProps) {
           <div className="w-16 h-16 bg-black text-white flex items-center justify-center rounded-sm">
             <PlaneTakeoff className="w-10 h-10" />
           </div>
-          <span className="font-bold text-4xl tracking-widest">FESTIVAL AIRLINES</span>
+          <span className="font-bold text-4xl tracking-widest">STA AIRLINES</span>
         </div>
         <div className="text-5xl font-black uppercase tracking-tighter">
           Boarding Pass

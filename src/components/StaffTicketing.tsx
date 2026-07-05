@@ -50,13 +50,13 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <PlaneTakeoff className="w-6 h-6 text-blue-300" />
-            <span className="font-semibold tracking-wide text-lg">Staff Operations Portal</span>
+            <span className="font-semibold tracking-wide text-lg">運行管理ポータル</span>
           </div>
           <div className="flex items-center space-x-6">
             {!isFirebaseConfigured && (
               <span className="px-3 py-1 bg-yellow-500/20 text-yellow-300 border border-yellow-500/50 rounded-full text-xs font-medium flex items-center space-x-1">
                 <AlertCircle className="w-3 h-3" />
-                <span>Mock Mode</span>
+                <span>モックモード</span>
               </span>
             )}
             <button 
@@ -64,7 +64,7 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
               className="text-blue-200 hover:text-white transition-colors flex items-center space-x-2 text-sm font-medium"
             >
               <LogOut className="w-4 h-4" />
-              <span>Sign Out</span>
+              <span>ログアウト</span>
             </button>
           </div>
         </div>
@@ -84,7 +84,7 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2`}
             >
               <TicketIcon className="w-4 h-4" />
-              <span>Issue Tickets</span>
+              <span>チケット発券</span>
             </button>
             <button
               onClick={() => setActiveTab('manage')}
@@ -95,7 +95,7 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2`}
             >
               <LayoutGrid className="w-4 h-4" />
-              <span>Manage Flights</span>
+              <span>フライト管理</span>
             </button>
           </nav>
         </div>
@@ -103,8 +103,8 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
         {activeTab === 'issue' ? (
           <>
             <header className="mb-6">
-              <h1 className="text-2xl font-bold text-gray-900">Ticket Issuance</h1>
-              <p className="text-gray-500 text-sm mt-1">Select a flight and assign a seat to issue a boarding pass.</p>
+              <h1 className="text-2xl font-bold text-gray-900">発券システム</h1>
+              <p className="text-gray-500 text-sm mt-1">フライトと座席を選択し、搭乗券を発券してください。</p>
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -112,7 +112,7 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
               {/* Form Section */}
               <div className="lg:col-span-5 space-y-6 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                 <div className="space-y-1.5">
-              <label className="block text-sm font-medium text-gray-700">Flight Selection</label>
+              <label className="block text-sm font-medium text-gray-700">フライト選択</label>
               <select 
                 value={selectedFlightId} 
                 onChange={(e) => {
@@ -128,7 +128,7 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-sm font-medium text-gray-700">Passenger Name</label>
+              <label className="block text-sm font-medium text-gray-700">搭乗者氏名</label>
               <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <User className="h-5 w-5 text-gray-400" />
@@ -150,14 +150,14 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
                 className="w-full flex items-center justify-center space-x-2 bg-blue-900 hover:bg-blue-800 disabled:bg-gray-300 disabled:text-gray-500 text-white font-medium py-2.5 px-4 rounded-md shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-900"
               >
                 <TicketIcon className="w-5 h-5" />
-                <span>Issue Boarding Pass</span>
+                <span>搭乗券を発券</span>
               </button>
             </div>
           </div>
 
           {/* Seat Map Section */}
           <div className="lg:col-span-7 bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col items-center">
-            <h2 className="text-sm font-medium text-gray-700 self-start mb-6">Seat Allocation Map</h2>
+            <h2 className="text-sm font-medium text-gray-700 self-start mb-6">座席選択マップ</h2>
             
             <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200 relative">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-gray-200 rounded-b-xl border border-t-0 border-gray-300"></div>
@@ -225,9 +225,9 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
             </div>
             
             <div className="flex space-x-8 mt-8 text-sm text-gray-600">
-              <div className="flex items-center space-x-2"><div className="w-4 h-4 bg-white border border-gray-300 rounded-sm"></div><span>Available</span></div>
-              <div className="flex items-center space-x-2"><div className="w-4 h-4 bg-blue-900 rounded-sm"></div><span>Selected</span></div>
-              <div className="flex items-center space-x-2"><div className="w-4 h-4 bg-gray-200 border border-gray-300 rounded-sm flex items-center justify-center text-[10px] text-gray-400 font-bold">×</div><span>Occupied</span></div>
+              <div className="flex items-center space-x-2"><div className="w-4 h-4 bg-white border border-gray-300 rounded-sm"></div><span>空席</span></div>
+              <div className="flex items-center space-x-2"><div className="w-4 h-4 bg-blue-900 rounded-sm"></div><span>選択中</span></div>
+              <div className="flex items-center space-x-2"><div className="w-4 h-4 bg-gray-200 border border-gray-300 rounded-sm flex items-center justify-center text-[10px] text-gray-400 font-bold">×</div><span>満席</span></div>
             </div>
             </div>
             </div>
@@ -238,17 +238,17 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
             
             {/* Display flights list to change status */}
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-              <h2 className="text-lg font-semibold text-gray-900 mb-6">Current Flights</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-6">登録済みのフライト</h2>
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead>
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Flight</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dest</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gate</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">便名</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">行先</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">時刻</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">搭乗口</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状況</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
@@ -273,10 +273,10 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
                             value={f.status}
                             onChange={(e) => updateStatus(f.id, e.target.value as any)}
                           >
-                            <option value="Scheduled">Scheduled</option>
-                            <option value="Boarding">Boarding</option>
-                            <option value="Departed">Departed</option>
-                            <option value="Delayed">Delayed</option>
+                            <option value="Scheduled">定刻</option>
+                            <option value="Boarding">搭乗中</option>
+                            <option value="Departed">出発済</option>
+                            <option value="Delayed">遅延</option>
                           </select>
                         </td>
                       </tr>
@@ -284,7 +284,7 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
                     {flights.length === 0 && (
                       <tr>
                         <td colSpan={6} className="px-4 py-4 text-center text-sm text-gray-500">
-                          No flights available. Register one above.
+                          フライトが登録されていません。上部のフォームから登録してください。
                         </td>
                       </tr>
                     )}
@@ -301,13 +301,13 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/80 backdrop-blur-sm p-4 print:static print:bg-transparent print:p-0 print:block">
           <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-5xl overflow-auto max-h-[90vh] print:p-0 print:shadow-none print:overflow-visible">
             <div className="flex justify-between items-center mb-6 print:hidden">
-              <h2 className="text-xl font-bold text-gray-900">Boarding Pass Issued</h2>
+              <h2 className="text-xl font-bold text-gray-900">搭乗券の発券が完了しました</h2>
               <div className="flex space-x-3">
                 <button 
                   onClick={() => window.print()}
                   className="bg-blue-900 text-white px-6 py-2 rounded-md font-medium hover:bg-blue-800 transition-colors"
                 >
-                  Print Ticket
+                  チケットを印刷
                 </button>
                 <button 
                   onClick={() => {
@@ -317,7 +317,7 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
                   }}
                   className="bg-gray-100 text-gray-700 border border-gray-300 px-6 py-2 rounded-md font-medium hover:bg-gray-200 transition-colors"
                 >
-                  Close & Next
+                  閉じて次へ
                 </button>
               </div>
             </div>

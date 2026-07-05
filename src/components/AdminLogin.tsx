@@ -22,7 +22,7 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
       onLogin();
       navigate('/admin');
     } else {
-      setError('Invalid username or password.');
+      setError('IDまたはパスワードが間違っています。');
     }
   };
 
@@ -33,10 +33,10 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
           <PlaneTakeoff className="w-12 h-12" />
         </div>
         <h2 className="mt-2 text-center text-3xl font-extrabold text-gray-900 tracking-tight">
-          Staff Portal
+          スタッフポータル
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Sign in to manage flights and ticketing
+          ログインしてフライト情報を管理
         </p>
       </div>
 
@@ -52,7 +52,7 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Staff ID
+                スタッフID
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -71,7 +71,7 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Password
+                パスワード
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -93,7 +93,7 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
                 type="submit"
                 className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-900 transition-colors"
               >
-                Sign in
+                ログイン
               </button>
             </div>
           </form>

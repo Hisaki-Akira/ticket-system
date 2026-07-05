@@ -46,13 +46,13 @@ export default function AddFlightForm({ onSuccess }: AddFlightFormProps) {
     <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
       <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center space-x-2">
         <Plane className="w-5 h-5 text-blue-600" />
-        <span>Register New Flight</span>
+        <span>新規フライト登録</span>
       </h2>
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-gray-700">Flight Number</label>
+            <label className="block text-sm font-medium text-gray-700">便名</label>
             <div className="relative rounded-md shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Plane className="h-5 w-5 text-gray-400" />
@@ -69,7 +69,7 @@ export default function AddFlightForm({ onSuccess }: AddFlightFormProps) {
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-gray-700">Destination</label>
+            <label className="block text-sm font-medium text-gray-700">行先</label>
             <div className="relative rounded-md shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <MapPin className="h-5 w-5 text-gray-400" />
@@ -86,7 +86,7 @@ export default function AddFlightForm({ onSuccess }: AddFlightFormProps) {
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-gray-700">Departure Time</label>
+            <label className="block text-sm font-medium text-gray-700">出発時刻</label>
             <div className="relative rounded-md shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Clock className="h-5 w-5 text-gray-400" />
@@ -102,7 +102,7 @@ export default function AddFlightForm({ onSuccess }: AddFlightFormProps) {
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-gray-700">Gate</label>
+            <label className="block text-sm font-medium text-gray-700">搭乗口</label>
             <div className="relative rounded-md shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <MapPin className="h-5 w-5 text-gray-400" />
@@ -125,12 +125,12 @@ export default function AddFlightForm({ onSuccess }: AddFlightFormProps) {
             disabled={isSubmitting || !flightNumber || !destination || !departureTime || !gate}
             className="flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-900 hover:bg-blue-800 disabled:bg-gray-300 disabled:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-900"
           >
-            {isSubmitting ? 'Registering...' : 'Register Flight'}
+            {isSubmitting ? '登録中...' : '登録する'}
           </button>
         </div>
       </form>
       <div className="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-md text-sm text-blue-800">
-        <p><strong>Note:</strong> When you register a new flight, 24 seats (1A to 6D) will be automatically generated and initialized as available in the database.</p>
+        <p><strong>注記:</strong> フライトを登録すると、自動的に24席分（1A〜6D）の空席データがデータベースに生成されます。</p>
       </div>
     </div>
   );

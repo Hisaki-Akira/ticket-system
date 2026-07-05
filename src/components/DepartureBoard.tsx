@@ -20,6 +20,13 @@ export default function DepartureBoard() {
     }
   };
 
+  const statusMap: Record<string, string> = {
+    'Scheduled': '定刻',
+    'Boarding': '搭乗中',
+    'Departed': '出発済',
+    'Delayed': '遅延'
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 font-sans pb-12">
       {/* Corporate Header */}
@@ -30,8 +37,8 @@ export default function DepartureBoard() {
               <Plane className="w-8 h-8 text-blue-900" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">Departures</h1>
-              <p className="text-blue-200 text-sm font-medium uppercase tracking-wider mt-1">Terminal 1 • International</p>
+              <h1 className="text-3xl font-bold tracking-tight">出発案内</h1>
+              <p className="text-blue-200 text-sm font-medium uppercase tracking-wider mt-1">第1ターミナル • 国際線</p>
             </div>
           </div>
           
@@ -40,7 +47,7 @@ export default function DepartureBoard() {
               <Clock className="w-5 h-5 text-blue-300" />
               <span>{time.toLocaleTimeString('en-US', { hour12: false })}</span>
             </div>
-            <p className="text-blue-200 text-sm mt-1">Local Time</p>
+            <p className="text-blue-200 text-sm mt-1">現在時刻</p>
           </div>
         </div>
       </div>
@@ -52,12 +59,12 @@ export default function DepartureBoard() {
           
           {/* Table Header */}
           <div className="grid grid-cols-12 gap-4 bg-gray-50 text-gray-500 px-6 py-4 text-xs font-semibold uppercase tracking-wider border-b border-gray-200">
-            <div className="col-span-2">Time</div>
-            <div className="col-span-3">Destination</div>
-            <div className="col-span-2">Flight</div>
-            <div className="col-span-1 text-center">Gate</div>
-            <div className="col-span-2 text-center">Load Factor</div>
-            <div className="col-span-2 text-right">Status</div>
+            <div className="col-span-2">時刻</div>
+            <div className="col-span-3">行先</div>
+            <div className="col-span-2">便名</div>
+            <div className="col-span-1 text-center">搭乗口</div>
+            <div className="col-span-2 text-center">搭乗率</div>
+            <div className="col-span-2 text-right">状況</div>
           </div>
 
           {/* Table Rows */}
@@ -97,7 +104,7 @@ export default function DepartureBoard() {
 
                   <div className="col-span-2 flex justify-end">
                     <span className={`px-3 py-1 rounded-md text-sm font-bold uppercase tracking-wide border ${getStatusStyle(flight.status)}`}>
-                      {flight.status}
+                      {statusMap[flight.status] || flight.status}
                     </span>
                   </div>
                 </div>
@@ -106,7 +113,7 @@ export default function DepartureBoard() {
             
             {flights.length === 0 && (
               <div className="p-12 text-center text-gray-500">
-                No flights scheduled for today.
+                本日のフライトは予定されていません。
               </div>
             )}
           </div>
@@ -114,10 +121,10 @@ export default function DepartureBoard() {
 
         {/* Footer info */}
         <div className="flex justify-between items-center mt-6 text-xs text-gray-500">
-          <p>Flight information is subject to change. Please verify at the gate.</p>
+          <p>運航情報は変更される場合があります。搭乗口の案内をご確認ください。</p>
           {!isFirebaseConfigured && (
             <p className="text-amber-600 flex items-center bg-amber-50 px-2 py-1 rounded border border-amber-200">
-              <span className="mr-2">⚠</span> Simulated Network Environment
+              <span className="mr-2">⚠</span> シミュレーション環境
             </p>
           )}
         </div>

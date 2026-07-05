@@ -1,0 +1,6 @@
+{
+  "name": "Virtual Airline Ticketing",
+  "description": "A virtual airline ticketing and digital signage system for a school festival.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

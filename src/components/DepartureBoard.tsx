@@ -58,7 +58,7 @@ export default function DepartureBoard() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           
           {/* Table Header */}
-          <div className="grid grid-cols-12 gap-4 bg-gray-50 text-gray-500 px-6 py-4 text-xs font-semibold uppercase tracking-wider border-b border-gray-200">
+          <div className="hidden md:grid md:grid-cols-12 gap-4 bg-gray-50 text-gray-500 px-6 py-4 text-xs font-semibold uppercase tracking-wider border-b border-gray-200">
             <div className="col-span-2">時刻</div>
             <div className="col-span-3">行先</div>
             <div className="col-span-2">便名</div>
@@ -69,44 +69,62 @@ export default function DepartureBoard() {
 
           {/* Table Rows */}
           <div className="divide-y divide-gray-100">
-            {flights.map(flight => {
+            {[...flights]
+              .sort((a, b) => {
+                if (a.status === 'Departed' && b.status !== 'Departed') return 1;
+                if (a.status !== 'Departed' && b.status === 'Departed') return -1;
+                return a.departureTime.localeCompare(b.departureTime);
+              })
+              .map(flight => {
               const flightTickets = tickets.filter(t => t.flightId === flight.id);
-              const loadPercentage = Math.round((flightTickets.length / flight.totalSeats) * 100);
+              const loadPercentage = flight.totalSeats > 0 ? Math.round((flightTickets.length / flight.totalSeats) * 100) : 0;
               
               return (
-                <div key={flight.id} className="grid grid-cols-12 gap-4 px-6 py-5 items-center hover:bg-gray-50 transition-colors">
-                  <div className="col-span-2 text-xl font-bold text-gray-900 font-mono">
-                    {flight.departureTime}
-                  </div>
-                  <div className="col-span-3 text-xl font-bold text-gray-900 uppercase">
-                    {flight.destination}
-                  </div>
-                  <div className="col-span-2 text-lg text-gray-600 font-mono">
-                    {flight.flightNumber}
-                  </div>
-                  <div className="col-span-1 text-center text-xl font-bold text-blue-900">
-                    {flight.gate}
-                  </div>
+                <div key={flight.id} className="flex flex-col md:grid md:grid-cols-12 gap-0 md:gap-4 px-6 py-5 md:items-center hover:bg-gray-50 transition-colors">
                   
-                  {/* Load Bar */}
-                  <div className="col-span-2 flex flex-col justify-center space-y-1.5 px-2">
-                    <div className="flex justify-between text-xs text-gray-500 font-medium">
-                      <span>{flightTickets.length} / {flight.totalSeats}</span>
-                      <span>{loadPercentage}%</span>
+                  {/* Time & Status (Mobile Top Row) */}
+                  <div className="flex justify-between items-center md:contents">
+                    <div className="md:col-span-2 text-2xl md:text-xl font-bold text-gray-900 font-mono md:order-1">
+                      {flight.departureTime}
                     </div>
-                    <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-blue-500 rounded-full transition-all duration-1000 ease-out"
-                        style={{ width: `${loadPercentage}%` }}
-                      ></div>
+                    <div className="md:col-span-2 flex md:justify-end md:order-6">
+                      <span className={`px-3 py-1 rounded-md text-sm font-bold uppercase tracking-wide border ${getStatusStyle(flight.status)}`}>
+                        {statusMap[flight.status] || flight.status}
+                      </span>
                     </div>
                   </div>
 
-                  <div className="col-span-2 flex justify-end">
-                    <span className={`px-3 py-1 rounded-md text-sm font-bold uppercase tracking-wide border ${getStatusStyle(flight.status)}`}>
-                      {statusMap[flight.status] || flight.status}
-                    </span>
+                  {/* Destination & Flight Number */}
+                  <div className="flex flex-col md:contents mt-2 md:mt-0">
+                    <div className="md:col-span-3 text-xl font-bold text-gray-900 uppercase md:order-2">
+                      {flight.destination}
+                    </div>
+                    <div className="md:col-span-2 text-sm md:text-lg text-gray-600 font-mono md:order-3">
+                      {flight.flightNumber}
+                    </div>
                   </div>
+
+                  {/* Gate & Load */}
+                  <div className="flex justify-between items-center mt-4 md:mt-0 pt-4 md:pt-0 border-t border-gray-100 md:border-none md:contents">
+                    <div className="flex items-center space-x-2 md:space-x-0 md:col-span-1 md:block md:text-center text-lg md:text-xl font-bold text-blue-900 md:order-4">
+                      <span className="text-sm text-gray-500 font-normal md:hidden">搭乗口:</span>
+                      <span>{flight.gate}</span>
+                    </div>
+                    
+                    <div className="md:col-span-2 flex flex-col justify-center space-y-1.5 px-0 md:px-2 w-1/2 md:w-auto md:order-5">
+                      <div className="flex justify-between text-xs text-gray-500 font-medium">
+                        <span>{flightTickets.length} / {flight.totalSeats}</span>
+                        <span>{loadPercentage}%</span>
+                      </div>
+                      <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-blue-500 rounded-full transition-all duration-1000 ease-out"
+                          style={{ width: `${loadPercentage}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
               );
             })}

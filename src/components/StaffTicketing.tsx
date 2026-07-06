@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from '../lib/useStore';
-import { PlaneTakeoff, User, LogOut, Ticket as TicketIcon, AlertCircle, Plus, LayoutGrid } from 'lucide-react';
+import { PlaneTakeoff, User, LogOut, Ticket as TicketIcon, AlertCircle, Plus, LayoutGrid, Users } from 'lucide-react';
 import { Ticket } from '../lib/firebase';
 import BoardingPass from './BoardingPass';
 import AddFlightForm from './AddFlightForm';
@@ -19,7 +19,7 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
   const [passengerName, setPassengerName] = useState<string>('');
   const [selectedSeat, setSelectedSeat] = useState<string>('');
   const [issuedTicket, setIssuedTicket] = useState<Ticket | null>(null);
-  const [activeTab, setActiveTab] = useState<'issue' | 'manage'>('issue');
+  const [activeTab, setActiveTab] = useState<'issue' | 'manage' | 'passengers'>('issue');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -96,6 +96,17 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
             >
               <LayoutGrid className="w-4 h-4" />
               <span>フライト管理</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('passengers')}
+              className={`${
+                activeTab === 'passengers'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2`}
+            >
+              <Users className="w-4 h-4" />
+              <span>予約者リスト</span>
             </button>
           </nav>
         </div>
@@ -232,7 +243,7 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
             </div>
             </div>
           </>
-        ) : (
+        ) : activeTab === 'manage' ? (
           <div className="space-y-8">
             <AddFlightForm onSuccess={() => setActiveTab('issue')} />
             
@@ -285,6 +296,57 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
                       <tr>
                         <td colSpan={6} className="px-4 py-4 text-center text-sm text-gray-500">
                           フライトが登録されていません。上部のフォームから登録してください。
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <header className="mb-6">
+              <h1 className="text-2xl font-bold text-gray-900">予約者リスト</h1>
+              <p className="text-gray-500 text-sm mt-1">フライトごとの予約者を確認できます。</p>
+            </header>
+
+            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">フライト選択</label>
+                <select 
+                  value={selectedFlightId} 
+                  onChange={(e) => setSelectedFlightId(e.target.value)}
+                  className="max-w-md w-full bg-white border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                >
+                  {flights.map(f => (
+                    <option key={f.id} value={f.id}>{f.flightNumber} - {f.destination} ({f.departureTime})</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">座席</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">搭乗者氏名</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">発券日時</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {flightTickets.length > 0 ? (
+                      [...flightTickets].sort((a, b) => a.seat.localeCompare(b.seat)).map((t) => (
+                        <tr key={t.id}>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm font-bold text-gray-900">{t.seat}</td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{t.passengerName}</td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{new Date(t.issuedAt).toLocaleString('ja-JP')}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={3} className="px-4 py-4 text-center text-sm text-gray-500">
+                          このフライトにはまだ予約者がいません。
                         </td>
                       </tr>
                     )}

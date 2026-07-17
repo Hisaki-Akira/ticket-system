@@ -16,21 +16,21 @@ export default function BoardingPass({ ticket, flight }: BoardingPassProps) {
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-white text-black font-sans p-10 border border-gray-300 shadow-xl print:border-none print:shadow-none print:p-0">
-      {/* Top Section */}
+      {/* 一番上のとこ */}
       <div className="flex justify-between items-center border-b-4 border-black pb-6 mb-6">
         <div className="flex items-center space-x-4">
-          {/* Logo Placeholder */}
+          {/* ロゴのとこ */}
           <div className="w-16 h-16 bg-black text-white flex items-center justify-center rounded-sm">
             <PlaneTakeoff className="w-10 h-10" />
           </div>
-          <span className="font-bold text-4xl tracking-widest">FESTIVAL AIRLINES</span>
+          <span className="font-bold text-4xl tracking-widest">SHIBAURA TECH AIRWAYS</span>
         </div>
         <div className="text-5xl font-black uppercase tracking-tighter">
           Boarding Pass
         </div>
       </div>
 
-      {/* Info Section */}
+      {/* 搭乗者系のデータ出るとこ */}
       <div className="grid grid-cols-4 gap-x-8 gap-y-6 mb-8">
         <div className="col-span-4 border-b-2 border-black pb-2">
           <p className="text-sm font-bold">お名前／NAME</p>
@@ -53,7 +53,7 @@ export default function BoardingPass({ ticket, flight }: BoardingPassProps) {
         </div>
       </div>
 
-      {/* Huge Text Section */}
+      {/* でっけえ文字 */}
       <div className="flex justify-between items-center border-b-4 border-black pb-8 mb-8">
         <div className="text-center flex-1">
           <p className="text-lg font-bold mb-2">搭乗時刻／BDG.Time</p>
@@ -69,9 +69,9 @@ export default function BoardingPass({ ticket, flight }: BoardingPassProps) {
         </div>
       </div>
 
-      {/* Bottom Section */}
+      {/* 下部 */}
       <div className="flex justify-between items-end">
-        {/* Left: Barcode (Dummy Vertical Barcode with thick lines) */}
+        {/* バーコード風 */}
         <div className="flex h-24 space-x-[2px]">
           <div className="w-6 h-full bg-black"></div>
           <div className="w-1 h-full bg-black"></div>
@@ -92,7 +92,7 @@ export default function BoardingPass({ ticket, flight }: BoardingPassProps) {
           <div className="w-3 h-full bg-black"></div>
         </div>
         
-        {/* Right: Notes */}
+        {/* ただの注意書きだよん */}
         <div className="text-right">
           <p className="text-2xl font-bold">搭乗時刻までにお越し下さい。</p>
           <p className="text-xl font-bold mt-1 text-gray-800">Please be at gate by boarding time.</p>

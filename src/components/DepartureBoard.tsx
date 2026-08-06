@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useStore } from '../lib/useStore';
-import { Plane, Clock } from 'lucide-react';
+import { Plane, Clock, Ticket as TicketIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function DepartureBoard() {
   const { flights, tickets, isFirebaseConfigured } = useStore();
@@ -54,6 +55,17 @@ export default function DepartureBoard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
         
+        {/* Actions */}
+        <div className="flex justify-end mb-6">
+          <Link 
+            to="/guest"
+            className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold shadow-sm transition-colors"
+          >
+            <TicketIcon className="w-5 h-5" />
+            <span>オンラインチェックイン (搭乗券発行)</span>
+          </Link>
+        </div>
+
         {/* Board */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           

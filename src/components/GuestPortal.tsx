@@ -45,7 +45,7 @@ export default function GuestPortal() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-3 cursor-pointer" onClick={() => navigate('/')}>
             <PlaneTakeoff className="w-6 h-6 text-blue-600" />
-            <span className="font-bold tracking-wide text-lg text-blue-900">FESTIVAL AIRLINES</span>
+            <span className="font-bold tracking-wide text-lg text-blue-900">Shibaura Tech Airways</span>
           </div>
           <button 
             onClick={() => navigate('/')}

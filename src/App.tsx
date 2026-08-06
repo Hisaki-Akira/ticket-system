@@ -3,6 +3,7 @@ import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import StaffTicketing from './components/StaffTicketing';
 import DepartureBoard from './components/DepartureBoard';
 import AdminLogin from './components/AdminLogin';
+import GuestPortal from './components/GuestPortal';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -29,6 +30,9 @@ export default function App() {
       <Routes>
         {/* Customer Display Route */}
         <Route path="/" element={<DepartureBoard />} />
+        
+        {/* Guest Portal Route */}
+        <Route path="/guest" element={<GuestPortal />} />
         
         {/* Staff Admin Routes */}
         <Route 

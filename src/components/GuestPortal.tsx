@@ -60,7 +60,7 @@ export default function GuestPortal() {
         
         <header className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">オンラインチェックイン</h1>
-          <p className="text-gray-500 mt-2">ご希望のフライトと座席を選択し、搭乗券を発行してください。<br>送信されたデータは暗号化されます。利用されることはありません。</p>
+          <p className="text-gray-500 mt-2">ご希望のフライトと座席を選択し、搭乗券を発行してください。<br />送信されたデータは暗号化されます。利用されることはありません。</p>
         </header>
 
         <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-200">

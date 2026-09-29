@@ -116,12 +116,12 @@ export function useStore() {
   const addFlight = async (flightData: Omit<Flight, 'id' | 'totalSeats' | 'seats'>) => {
     const flightId = Math.random().toString(36).substr(2, 9);
     
-    // Generate initial seat data for 24 seats (1A - 6D)
-    const COLUMNS = ['A', 'B', 'C', 'D'];
-    const ROWS = 6;
+    // Generate initial seat data for 21 seats (3 rows, 2-3-2: A, C, D, E, G, H, K)
+    const SEAT_COLUMNS = ['A', 'C', 'D', 'E', 'G', 'H', 'K'];
+    const ROWS = 3;
     const initialSeats = [];
     for (let r = 1; r <= ROWS; r++) {
-      for (const c of COLUMNS) {
+      for (const c of SEAT_COLUMNS) {
         initialSeats.push({ seatId: `${r}${c}`, isBooked: false });
       }
     }
@@ -129,7 +129,7 @@ export function useStore() {
     const newFlight: Flight = {
       id: flightId,
       ...flightData,
-      totalSeats: 24,
+      totalSeats: 21,
       seats: initialSeats
     };
 

@@ -81,7 +81,7 @@ export default function DepartureBoard() {
                 Shibaura Tech Airways
               </span>
               <p className="text-xs text-slate-500">
-                国内線 出発案内
+                国際線 出発案内
               </p>
             </div>
           </div>

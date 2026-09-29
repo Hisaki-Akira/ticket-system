@@ -1,7 +1,19 @@
 import { useState, useEffect } from 'react';
 import { db, isFirebaseConfigured, Flight, Ticket } from './firebase';
-import { mockFlights, mockTickets, addMockTicket, subscribeToMockData, updateMockFlightStatus, addMockFlight } from './mockStore';
-import { collection, onSnapshot, doc, setDoc, query, where } from 'firebase/firestore';
+import { 
+  mockFlights, 
+  mockTickets, 
+  addMockTicket, 
+  deleteMockTicket, 
+  clearMockTickets, 
+  subscribeToMockData, 
+  updateMockFlightStatus, 
+  addMockFlight, 
+  deleteMockFlight,
+  resetMockToDefault,
+  getTodayDateStr
+} from './mockStore';
+import { collection, onSnapshot, doc, setDoc, deleteDoc, getDocs } from 'firebase/firestore';
 
 export function useStore() {
   const [flights, setFlights] = useState<Flight[]>([]);
@@ -22,7 +34,14 @@ export function useStore() {
 
     // Listen to flights
     const unsubscribeFlights = onSnapshot(collection(db, 'flights'), (snapshot) => {
-      const flightsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Flight));
+      const flightsData = snapshot.docs.map(doc => {
+        const d = doc.data();
+        return { 
+          id: doc.id, 
+          ...d,
+          departureDate: d.departureDate || getTodayDateStr()
+        } as Flight;
+      });
       setFlights(flightsData);
     });
 
@@ -58,6 +77,30 @@ export function useStore() {
     return ticket;
   };
 
+  const deleteTicket = async (ticketId: string) => {
+    if (!isFirebaseConfigured) {
+      deleteMockTicket(ticketId);
+      return;
+    }
+
+    if (db) {
+      await deleteDoc(doc(db, 'tickets', ticketId));
+    }
+  };
+
+  const clearAllTickets = async () => {
+    if (!isFirebaseConfigured) {
+      clearMockTickets();
+      return;
+    }
+
+    if (db) {
+      const snap = await getDocs(collection(db, 'tickets'));
+      const promises = snap.docs.map(d => deleteDoc(d.ref));
+      await Promise.all(promises);
+    }
+  };
+
   const updateStatus = async (flightId: string, status: Flight['status']) => {
     if (!isFirebaseConfigured) {
       updateMockFlightStatus(flightId, status);
@@ -66,9 +109,6 @@ export function useStore() {
 
     if (db) {
       const flightRef = doc(db, 'flights', flightId);
-      // Wait, we need to updateDoc
-      // import updateDoc from firebase/firestore
-      // But we just use setDoc with merge for simplicity
       await setDoc(flightRef, { status }, { merge: true });
     }
   };
@@ -104,12 +144,33 @@ export function useStore() {
     return newFlight;
   };
 
+  const deleteFlight = async (flightId: string) => {
+    if (!isFirebaseConfigured) {
+      deleteMockFlight(flightId);
+      return;
+    }
+
+    if (db) {
+      await deleteDoc(doc(db, 'flights', flightId));
+    }
+  };
+
+  const resetData = async () => {
+    if (!isFirebaseConfigured) {
+      resetMockToDefault();
+    }
+  };
+
   return {
     flights,
     tickets,
     issueTicket,
+    deleteTicket,
+    clearAllTickets,
     updateStatus,
     addFlight,
+    deleteFlight,
+    resetData,
     isFirebaseConfigured
   };
 }

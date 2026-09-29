@@ -22,7 +22,8 @@ export interface Flight {
   id: string;
   flightNumber: string;
   destination: string;
-  departureTime: string;
+  departureDate: string; // YYYY-MM-DD
+  departureTime: string; // HH:mm
   status: 'Scheduled' | 'Boarding' | 'Departed' | 'Delayed';
   gate: string;
   totalSeats: number;

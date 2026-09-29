@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from '../lib/useStore';
 import { 
-  PlaneTakeoff, 
+  Plane, 
   User, 
   Ticket as TicketIcon, 
   Smartphone, 
@@ -91,31 +91,31 @@ export default function GuestPortal() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0D131F] text-slate-100 font-sans pb-16 print:bg-white print:text-black">
+    <div className="min-h-screen bg-gray-50 text-slate-900 font-sans pb-16 print:bg-white print:text-black">
       
       {/* Top Navbar */}
-      <header className="border-b border-slate-800 bg-[#0F1626]/90 backdrop-blur sticky top-0 z-20 print:hidden">
+      <header className="border-b border-gray-200 bg-white sticky top-0 z-20 print:hidden shadow-xs">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <button 
             onClick={() => navigate('/')}
-            className="flex items-center space-x-2 text-slate-300 hover:text-white transition-colors cursor-pointer text-sm font-medium"
+            className="flex items-center space-x-1.5 text-slate-600 hover:text-slate-900 transition-colors cursor-pointer text-sm font-medium"
           >
-            <ArrowLeft className="w-4 h-4 text-slate-400" />
+            <ArrowLeft className="w-4 h-4" />
             <span>出発案内へ戻る</span>
           </button>
 
-          <div className="flex items-center space-x-2 font-mono">
-            <PlaneTakeoff className="w-4 h-4 text-sky-400" />
-            <span className="font-extrabold tracking-wider text-sm text-white">SHIBAURA TECH AIRWAYS</span>
+          <div className="flex items-center space-x-2">
+            <Plane className="w-4 h-4 text-slate-700" />
+            <span className="font-bold text-sm text-slate-900">Shibaura Tech Airways</span>
           </div>
 
           <div>
             {savedTickets.length > 0 && (
               <button
                 onClick={() => setShowSavedModal(true)}
-                className="text-xs font-medium bg-slate-800 hover:bg-slate-700 text-sky-300 border border-sky-500/30 px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1.5 cursor-pointer"
+                className="text-xs font-medium bg-white hover:bg-gray-50 text-slate-700 border border-gray-300 px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1.5 cursor-pointer"
               >
-                <Bookmark className="w-3.5 h-3.5 text-sky-400" />
+                <Bookmark className="w-3.5 h-3.5 text-slate-500" />
                 <span>保存した搭乗券 ({savedTickets.length})</span>
               </button>
             )}
@@ -127,30 +127,30 @@ export default function GuestPortal() {
         
         {/* Page Title */}
         <div className="text-center space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight text-white">搭乗手続き (チェックイン)</h1>
-          <p className="text-xs text-slate-400">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">搭乗手続き (チェックイン)</h1>
+          <p className="text-xs text-slate-500">
             ご搭乗便・お名前・座席をご指定の上、搭乗券を発行してください。
           </p>
         </div>
 
         {/* Check-in Form Card */}
-        <div className="bg-[#11192C] rounded-2xl border border-slate-800 p-6 sm:p-8 space-y-7 shadow-xl">
+        <div className="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 space-y-7 shadow-xs">
           
           {/* Step 1: Flight Selection */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
+              <label className="text-xs font-bold text-slate-700">
                 1. ご搭乗便の選択
               </label>
 
               {availableDates.length > 1 && (
-                <div className="flex items-center space-x-1.5 text-xs text-slate-400">
-                  <Calendar className="w-3 h-3 text-sky-400" />
+                <div className="flex items-center space-x-1.5 text-xs text-slate-500">
+                  <Calendar className="w-3 h-3 text-slate-400" />
                   <span>日程絞込:</span>
                   <select
                     value={dateFilter}
                     onChange={(e) => setDateFilter(e.target.value)}
-                    className="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded px-2 py-0.5"
+                    className="bg-white border border-gray-300 text-slate-700 text-xs rounded px-2 py-0.5"
                   >
                     <option value="all">全日程 ({availableFlights.length}便)</option>
                     {availableDates.map(d => (
@@ -167,7 +167,7 @@ export default function GuestPortal() {
                 setSelectedFlightId(e.target.value);
                 setSelectedSeat('');
               }}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 font-medium text-sm focus:outline-none focus:border-sky-500 transition-colors"
+              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-slate-800 font-medium text-sm focus:outline-none focus:border-slate-900 transition-colors"
             >
               <option value="" disabled>フライトを選択してください</option>
               {filteredFlights.map(f => (
@@ -180,11 +180,11 @@ export default function GuestPortal() {
 
           {/* Step 2: Passenger Name */}
           <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
-              2. ご搭乗者氏名
+            <label className="text-xs font-bold text-slate-700">
+              2. ご搭乗者名
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                 <User className="h-4 w-4" />
               </div>
               <input 
@@ -192,38 +192,38 @@ export default function GuestPortal() {
                 value={passengerName}
                 onChange={(e) => setPassengerName(e.target.value)}
                 placeholder="例: YAMADA TARO"
-                className="w-full pl-10 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 uppercase text-sm font-medium focus:outline-none focus:border-sky-500 transition-colors placeholder:text-slate-500"
+                className="w-full pl-10 bg-white border border-gray-300 rounded-xl px-4 py-3 text-slate-800 uppercase text-sm font-medium focus:outline-none focus:border-slate-900 transition-colors placeholder:text-slate-400"
               />
             </div>
           </div>
 
-          {/* Step 3: Seat Map */}
+          {/* Step 3: Seat Map (2-3-2 with 3 rows) */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                3. 座席指定
+              <label className="text-xs font-bold text-slate-700">
+                3. 座席指定 (2-3-2列)
               </label>
               {selectedSeat && (
-                <span className="text-xs font-mono font-bold text-sky-400">
+                <span className="text-xs font-mono font-bold text-slate-900">
                   選択中: {selectedSeat}席
                 </span>
               )}
             </div>
             
-            <div className="bg-[#0C121E] p-6 rounded-xl border border-slate-800 flex flex-col items-center">
+            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 flex flex-col items-center">
               {selectedFlightId ? (
                 <>
-                  <div className="text-[11px] font-mono tracking-widest text-slate-500 uppercase mb-3">
-                    ▲ 機首方向 (FRONT)
+                  <div className="text-[11px] font-bold text-slate-500 mb-3">
+                    ▲ 機首方向
                   </div>
 
                   {/* Seat Map Header: Window / Aisle Indicators */}
-                  <div className="flex items-center space-x-2 sm:space-x-3 text-center text-[10px] font-mono text-slate-400 mb-2">
-                    <div className="w-[72px] sm:w-[88px] text-slate-400">窓側 / A · C</div>
-                    <div className="w-5 text-slate-600">通路</div>
-                    <div className="w-[108px] sm:w-[132px] text-slate-400">中央 / D · E · G</div>
-                    <div className="w-5 text-slate-600">通路</div>
-                    <div className="w-[72px] sm:w-[88px] text-slate-400">窓側 / H · K</div>
+                  <div className="flex items-center space-x-2 sm:space-x-3 text-center text-[10px] text-slate-500 mb-2">
+                    <div className="w-[72px] sm:w-[88px]">窓側 / A · C</div>
+                    <div className="w-5">通路</div>
+                    <div className="w-[108px] sm:w-[132px]">中央 / D · E · G</div>
+                    <div className="w-5">通路</div>
+                    <div className="w-[72px] sm:w-[88px]">窓側 / H · K</div>
                   </div>
 
                   {/* 3 Rows of 2-3-2 Seats */}
@@ -245,10 +245,10 @@ export default function GuestPortal() {
                                   onClick={() => setSelectedSeat(seatId)}
                                   className={`w-9 sm:w-10 h-10 sm:h-11 rounded-lg font-mono text-xs font-bold transition-all focus:outline-none cursor-pointer ${
                                     isOccupied 
-                                      ? 'bg-slate-800/40 text-slate-600 border border-slate-800 cursor-not-allowed' 
+                                      ? 'bg-gray-200 text-gray-400 border border-gray-200 cursor-not-allowed' 
                                       : isSelected 
-                                        ? 'bg-sky-500 text-white font-black shadow-lg shadow-sky-500/30 ring-2 ring-sky-400' 
-                                        : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                                        ? 'bg-slate-900 text-white font-bold shadow-sm' 
+                                        : 'bg-white hover:bg-gray-100 text-slate-800 border border-gray-300'
                                   }`}
                                 >
                                   {isOccupied ? '×' : seatId}
@@ -275,10 +275,10 @@ export default function GuestPortal() {
                                   onClick={() => setSelectedSeat(seatId)}
                                   className={`w-9 sm:w-10 h-10 sm:h-11 rounded-lg font-mono text-xs font-bold transition-all focus:outline-none cursor-pointer ${
                                     isOccupied 
-                                      ? 'bg-slate-800/40 text-slate-600 border border-slate-800 cursor-not-allowed' 
+                                      ? 'bg-gray-200 text-gray-400 border border-gray-200 cursor-not-allowed' 
                                       : isSelected 
-                                        ? 'bg-sky-500 text-white font-black shadow-lg shadow-sky-500/30 ring-2 ring-sky-400' 
-                                        : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                                        ? 'bg-slate-900 text-white font-bold shadow-sm' 
+                                        : 'bg-white hover:bg-gray-100 text-slate-800 border border-gray-300'
                                   }`}
                                 >
                                   {isOccupied ? '×' : seatId}
@@ -305,10 +305,10 @@ export default function GuestPortal() {
                                   onClick={() => setSelectedSeat(seatId)}
                                   className={`w-9 sm:w-10 h-10 sm:h-11 rounded-lg font-mono text-xs font-bold transition-all focus:outline-none cursor-pointer ${
                                     isOccupied 
-                                      ? 'bg-slate-800/40 text-slate-600 border border-slate-800 cursor-not-allowed' 
+                                      ? 'bg-gray-200 text-gray-400 border border-gray-200 cursor-not-allowed' 
                                       : isSelected 
-                                        ? 'bg-sky-500 text-white font-black shadow-lg shadow-sky-500/30 ring-2 ring-sky-400' 
-                                        : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                                        ? 'bg-slate-900 text-white font-bold shadow-sm' 
+                                        : 'bg-white hover:bg-gray-100 text-slate-800 border border-gray-300'
                                   }`}
                                 >
                                   {isOccupied ? '×' : seatId}
@@ -322,17 +322,17 @@ export default function GuestPortal() {
                   </div>
 
                   {/* Legend */}
-                  <div className="flex items-center space-x-6 mt-6 text-xs text-slate-400">
+                  <div className="flex items-center space-x-6 mt-6 text-xs text-slate-600">
                     <div className="flex items-center space-x-1.5">
-                      <div className="w-3.5 h-3.5 bg-slate-800 border border-slate-700 rounded"></div>
+                      <div className="w-3.5 h-3.5 bg-white border border-gray-300 rounded"></div>
                       <span>空席</span>
                     </div>
                     <div className="flex items-center space-x-1.5">
-                      <div className="w-3.5 h-3.5 bg-sky-500 rounded"></div>
+                      <div className="w-3.5 h-3.5 bg-slate-900 rounded"></div>
                       <span>選択中</span>
                     </div>
                     <div className="flex items-center space-x-1.5">
-                      <div className="w-3.5 h-3.5 bg-slate-800/40 border border-slate-800 rounded flex items-center justify-center text-[9px] text-slate-600">×</div>
+                      <div className="w-3.5 h-3.5 bg-gray-200 border border-gray-300 rounded flex items-center justify-center text-[9px] text-gray-500">×</div>
                       <span>指定済</span>
                     </div>
                   </div>
@@ -349,7 +349,7 @@ export default function GuestPortal() {
           <button 
             onClick={handleIssue}
             disabled={!selectedFlightId || !passengerName.trim() || !selectedSeat}
-            className="w-full flex items-center justify-center space-x-2 bg-sky-600 hover:bg-sky-500 disabled:bg-slate-800 disabled:text-slate-600 text-white font-bold py-3.5 px-4 rounded-xl transition-all cursor-pointer disabled:cursor-not-allowed shadow-md shadow-sky-950/40"
+            className="w-full flex items-center justify-center space-x-2 bg-slate-900 hover:bg-slate-800 disabled:bg-gray-200 disabled:text-gray-400 text-white font-bold py-3.5 px-4 rounded-xl transition-all cursor-pointer disabled:cursor-not-allowed shadow-xs"
           >
             <TicketIcon className="w-4 h-4" />
             <span>搭乗券を発行する</span>
@@ -361,17 +361,17 @@ export default function GuestPortal() {
 
       {/* Completion Modal */}
       {issuedTicket && selectedFlight && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4 print:static print:bg-transparent print:p-0 print:block">
-          <div className="bg-[#11192C] text-slate-100 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-4xl w-full max-h-[92vh] overflow-y-auto space-y-6 shadow-2xl print:p-0 print:border-none print:shadow-none">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 print:static print:bg-transparent print:p-0 print:block">
+          <div className="bg-white text-slate-900 border border-gray-200 rounded-2xl p-6 sm:p-8 max-w-4xl w-full max-h-[92vh] overflow-y-auto space-y-6 shadow-2xl print:p-0 print:border-none print:shadow-none">
             
             {/* Modal Actions Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-800 pb-4 print:hidden">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-gray-200 pb-4 print:hidden">
               <div>
                 <div className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                  <h2 className="text-lg font-bold text-white">搭乗券の発行が完了しました</h2>
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                  <h2 className="text-lg font-bold text-slate-900">搭乗券を発行しました</h2>
                 </div>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-slate-500 mt-1">
                   スマートフォンのカメラでQRコードを読み取ると、搭乗券を保存・表示できます。
                 </p>
               </div>
@@ -379,10 +379,10 @@ export default function GuestPortal() {
               <div className="flex items-center space-x-2 w-full sm:w-auto">
                 <button 
                   onClick={() => window.print()}
-                  className="flex-1 sm:flex-none flex items-center justify-center space-x-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                  className="flex-1 sm:flex-none flex items-center justify-center space-x-1.5 bg-white hover:bg-gray-50 text-slate-700 border border-gray-300 px-4 py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer"
                 >
                   <Printer className="w-3.5 h-3.5" />
-                  <span>印刷 / PDF</span>
+                  <span>印刷 / 保存</span>
                 </button>
                 <button 
                   onClick={() => {
@@ -391,7 +391,7 @@ export default function GuestPortal() {
                     setSelectedSeat('');
                     navigate('/');
                   }}
-                  className="flex-1 sm:flex-none bg-sky-600 hover:bg-sky-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                  className="flex-1 sm:flex-none bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer"
                 >
                   完了（出発案内へ）
                 </button>
@@ -399,9 +399,9 @@ export default function GuestPortal() {
             </div>
 
             {/* Smartphone QR Scan Banner */}
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-5 print:hidden">
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-5 print:hidden">
               <div className="flex flex-col sm:flex-row items-center gap-4">
-                <div className="bg-white p-2.5 rounded-lg border border-slate-300 flex-shrink-0">
+                <div className="bg-white p-2.5 rounded-lg border border-gray-300 flex-shrink-0">
                   <QRCodeSVG 
                     value={ticketUrl} 
                     size={110} 
@@ -410,14 +410,14 @@ export default function GuestPortal() {
                   />
                 </div>
                 <div className="text-center sm:text-left space-y-1">
-                  <div className="text-xs font-bold uppercase tracking-wider text-sky-400 flex items-center justify-center sm:justify-start gap-1">
-                    <Smartphone className="w-3.5 h-3.5" />
+                  <div className="text-xs font-bold text-slate-700 flex items-center justify-center sm:justify-start gap-1">
+                    <Smartphone className="w-3.5 h-3.5 text-slate-500" />
                     <span>スマートフォン用搭乗券</span>
                   </div>
-                  <h3 className="text-base font-extrabold text-white">
+                  <h3 className="text-base font-bold text-slate-900">
                     {selectedFlight.departureDate} {selectedFlight.departureTime}発 • {selectedFlight.flightNumber}便 • {issuedTicket.seat}席 {issuedTicket.passengerName} 様
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-slate-500">
                     QRコードをスキャンすると、この端末やスマートフォンに搭乗情報が保存されます。
                   </p>
                 </div>
@@ -426,16 +426,16 @@ export default function GuestPortal() {
               <div className="flex flex-col gap-2 w-full md:w-auto">
                 <button 
                   onClick={handleCopyLink}
-                  className="w-full px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  className="w-full px-4 py-2 bg-white hover:bg-gray-50 text-slate-700 border border-gray-300 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                 >
-                  {copied ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5 text-slate-400" />}
+                  {copied ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5 text-slate-400" />}
                   <span>{copied ? 'URLをコピーしました' : 'URLをコピー'}</span>
                 </button>
                 <a
                   href={ticketUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-colors text-center"
+                  className="w-full px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-colors text-center"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
                   <span>搭乗券画面を開く</span>
@@ -454,22 +454,22 @@ export default function GuestPortal() {
 
       {/* Saved Boarding Passes Drawer */}
       {showSavedModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="bg-[#11192C] border border-slate-800 rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
-            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+          <div className="bg-white border border-gray-200 rounded-2xl p-6 w-full max-w-lg shadow-xl space-y-4 text-slate-900">
+            <div className="flex justify-between items-center border-b border-gray-200 pb-3">
               <div className="flex items-center space-x-2">
-                <Bookmark className="w-4 h-4 text-sky-400" />
-                <h3 className="font-bold text-base text-white">保存済みの搭乗券</h3>
+                <Bookmark className="w-4 h-4 text-slate-700" />
+                <h3 className="font-bold text-base text-slate-900">保存済みの搭乗券</h3>
               </div>
               <button 
                 onClick={() => setShowSavedModal(false)}
-                className="text-slate-400 hover:text-white p-1 cursor-pointer"
+                className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-600">
               このブラウザで発行した搭乗券の履歴です。
             </p>
 
@@ -481,20 +481,20 @@ export default function GuestPortal() {
                     setShowSavedModal(false);
                     navigate(`/pass/${st.id}?flight=${encodeURIComponent(st.flightNumber)}&dest=${encodeURIComponent(st.destination)}&date=${encodeURIComponent(st.departureDate)}&time=${encodeURIComponent(st.departureTime)}&gate=${encodeURIComponent(st.gate)}&seat=${encodeURIComponent(st.seat)}&name=${encodeURIComponent(st.name)}&status=${encodeURIComponent(st.status)}`);
                   }}
-                  className="p-3.5 bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-sky-500/50 rounded-xl cursor-pointer transition-all flex items-center justify-between"
+                  className="p-3.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl cursor-pointer transition-all flex items-center justify-between"
                 >
                   <div className="space-y-1">
-                    <div className="flex items-center space-x-2 font-mono">
-                      <span className="font-bold text-sky-400">{st.flightNumber}</span>
-                      <span className="bg-slate-800 text-slate-300 text-xs px-2 py-0.5 rounded font-bold">{st.seat}席</span>
-                      <span className="font-sans font-bold text-white">{st.name} 様</span>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-mono font-bold text-slate-900">{st.flightNumber}</span>
+                      <span className="bg-gray-200 text-slate-800 text-xs px-2 py-0.5 rounded font-mono font-bold">{st.seat}席</span>
+                      <span className="font-bold text-slate-900">{st.name} 様</span>
                     </div>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-500">
                       {st.departureDate} {st.departureTime}発 • {st.destination} (搭乗口: {st.gate})
                     </p>
                   </div>
-                  <span className="text-xs font-bold text-sky-400 border border-sky-500/30 px-2 py-1 rounded-md">
-                    表示 →
+                  <span className="text-xs font-bold text-slate-900 bg-white border border-gray-300 px-2.5 py-1 rounded-md">
+                    表示
                   </span>
                 </div>
               ))}
@@ -502,7 +502,7 @@ export default function GuestPortal() {
 
             <button 
               onClick={() => setShowSavedModal(false)}
-              className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl text-xs transition-colors cursor-pointer"
+              className="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-slate-800 font-bold rounded-xl text-xs transition-colors cursor-pointer"
             >
               閉じる
             </button>

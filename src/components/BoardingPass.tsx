@@ -37,8 +37,8 @@ export default function BoardingPass({ ticket, flight }: BoardingPassProps) {
             <PlaneTakeoff className="w-9 h-9" />
           </div>
           <div>
-            <span className="font-bold text-3xl sm:text-4xl tracking-widest block">FESTIVAL AIRLINES</span>
-            <span className="text-xs font-mono tracking-wider text-gray-600">SCHOOL FESTIVAL FLIGHT SYSTEM</span>
+            <span className="font-bold text-3xl sm:text-4xl tracking-widest block">SHIBAURA TECH AIRWAYS</span>
+            <span className="text-xs font-mono tracking-wider text-gray-600">SHIBAURA TECH FLIGHT SYSTEM</span>
           </div>
         </div>
         <div className="text-3xl sm:text-5xl font-black uppercase tracking-tighter text-right">
@@ -117,7 +117,7 @@ export default function BoardingPass({ ticket, flight }: BoardingPassProps) {
           <p className="text-xl sm:text-2xl font-black">搭乗時刻までにお越し下さい。</p>
           <p className="text-sm sm:text-base font-bold mt-1 text-gray-700">Please be at gate by boarding time.</p>
           <p className="text-xs text-gray-500 font-mono mt-2">
-            FESTIVAL AIRLINES • FLIGHT DATE: {flight.departureDate || '2026'}
+            SHIBAURA TECH AIRWAYS • FLIGHT DATE: {flight.departureDate || '2026'}
           </p>
         </div>
       </div>

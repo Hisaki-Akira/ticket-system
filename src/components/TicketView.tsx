@@ -107,7 +107,7 @@ export default function TicketView() {
           </Link>
           <div className="flex items-center space-x-2">
             <PlaneTakeoff className="w-5 h-5 text-sky-400" />
-            <span className="font-bold tracking-wider text-sm text-white">FESTIVAL AIRLINES</span>
+            <span className="font-bold tracking-wider text-sm text-white">SHIBAURA TECH AIRWAYS</span>
           </div>
           <button 
             onClick={handleCopyUrl}
@@ -166,7 +166,7 @@ export default function TicketView() {
           <div className="bg-blue-950 text-white p-6 relative">
             <div className="flex justify-between items-start">
               <div>
-                <span className="text-sky-400 text-xs font-bold uppercase tracking-widest">Festival Virtual Airlines</span>
+                <span className="text-sky-400 text-xs font-bold uppercase tracking-widest">Shibaura Tech Airways</span>
                 <h2 className="text-2xl font-black tracking-tight mt-0.5">搭乗券 / BOARDING PASS</h2>
               </div>
               <div className="text-right">
@@ -270,7 +270,7 @@ export default function TicketView() {
           {/* Card Footer notice */}
           <div className="bg-slate-100 px-6 py-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
             <span>搭乗日: {flight.departureDate} • 出発10分前までに搭乗口へお越しください。</span>
-            <span className="font-semibold text-slate-700">FESTIVAL AIRLINES</span>
+            <span className="font-semibold text-slate-700">SHIBAURA TECH AIRWAYS</span>
           </div>
         </div>
 

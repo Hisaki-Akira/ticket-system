@@ -65,7 +65,7 @@ export default function AddFlightForm({ onSuccess }: AddFlightFormProps) {
                 required
                 value={flightNumber}
                 onChange={(e) => setFlightNumber(e.target.value)}
-                placeholder="例: FA-101"
+                placeholder="例: STA-101"
                 className="w-full pl-10 bg-white border border-gray-300 rounded-md px-3 py-2 text-gray-900 uppercase focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm placeholder:text-gray-400 placeholder:normal-case"
               />
             </div>

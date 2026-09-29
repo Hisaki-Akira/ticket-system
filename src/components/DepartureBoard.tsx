@@ -69,7 +69,7 @@ export default function DepartureBoard() {
             <div>
               <h1 className="text-3xl font-bold tracking-tight">出発案内</h1>
               <p className="text-blue-200 text-sm font-medium uppercase tracking-wider mt-1">
-                FESTIVAL AIRLINES • 第1ターミナル
+                SHIBAURA TECH AIRWAYS • 第1ターミナル
               </p>
             </div>
           </div>

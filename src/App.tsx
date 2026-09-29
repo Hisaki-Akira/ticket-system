@@ -4,6 +4,7 @@ import StaffTicketing from './components/StaffTicketing';
 import DepartureBoard from './components/DepartureBoard';
 import AdminLogin from './components/AdminLogin';
 import GuestPortal from './components/GuestPortal';
+import TicketView from './components/TicketView';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -33,6 +34,11 @@ export default function App() {
         
         {/* Guest Portal Route */}
         <Route path="/guest" element={<GuestPortal />} />
+
+        {/* Digital Boarding Pass Routes (scanned via QR Code or direct link) */}
+        <Route path="/pass/:ticketId" element={<TicketView />} />
+        <Route path="/pass" element={<TicketView />} />
+        <Route path="/ticket/:ticketId" element={<TicketView />} />
         
         {/* Staff Admin Routes */}
         <Route 
@@ -51,8 +57,10 @@ export default function App() {
             )
           } 
         />
+
+        {/* Catch-all fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </HashRouter>
   );
 }
-

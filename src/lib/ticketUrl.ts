@@ -42,7 +42,7 @@ export function getTicketUrl(ticket: Ticket, flight?: Flight | null): string {
 
 export function saveLocalTicket(ticket: Ticket, flight?: Flight | null) {
   try {
-    const key = 'festival_airline_saved_tickets_v2';
+    const key = 'shibaura_tech_airways_saved_tickets_v3';
     const existingStr = localStorage.getItem(key);
     let list: TicketPayload[] = existingStr ? JSON.parse(existingStr) : [];
     
@@ -73,7 +73,7 @@ export function saveLocalTicket(ticket: Ticket, flight?: Flight | null) {
 
 export function getLocalTickets(): TicketPayload[] {
   try {
-    const key = 'festival_airline_saved_tickets_v2';
+    const key = 'shibaura_tech_airways_saved_tickets_v3';
     const existingStr = localStorage.getItem(key);
     return existingStr ? JSON.parse(existingStr) : [];
   } catch (e) {
@@ -83,7 +83,7 @@ export function getLocalTickets(): TicketPayload[] {
 
 export function removeLocalTicket(ticketId: string) {
   try {
-    const key = 'festival_airline_saved_tickets_v2';
+    const key = 'shibaura_tech_airways_saved_tickets_v3';
     const existingStr = localStorage.getItem(key);
     if (!existingStr) return;
     const list: TicketPayload[] = JSON.parse(existingStr);

@@ -1,7 +1,7 @@
 import { Flight, Ticket } from './firebase';
 
-const STORAGE_KEY_FLIGHTS = 'festival_airline_mock_flights_v2';
-const STORAGE_KEY_TICKETS = 'festival_airline_mock_tickets_v2';
+const STORAGE_KEY_FLIGHTS = 'shibaura_tech_airways_flights_v3';
+const STORAGE_KEY_TICKETS = 'shibaura_tech_airways_tickets_v3';
 
 export function getTodayDateStr(): string {
   const d = new Date();
@@ -25,11 +25,11 @@ const getDefaultFlights = (): Flight[] => {
   const tomorrow = getTomorrowDateStr();
 
   return [
-    { id: 'f1', flightNumber: 'FA-101', destination: '東京（成田）', departureDate: today, departureTime: '10:00', status: 'Boarding', gate: 'A1', totalSeats: 24 },
-    { id: 'f2', flightNumber: 'FA-202', destination: '大阪（伊丹）', departureDate: today, departureTime: '12:30', status: 'Scheduled', gate: 'B3', totalSeats: 24 },
-    { id: 'f3', flightNumber: 'FA-303', destination: '札幌（新千歳）', departureDate: today, departureTime: '15:45', status: 'Scheduled', gate: 'C7', totalSeats: 24 },
-    { id: 'f4', flightNumber: 'FA-505', destination: '沖縄（那覇）', departureDate: today, departureTime: '17:15', status: 'Scheduled', gate: 'D2', totalSeats: 24 },
-    { id: 'f5', flightNumber: 'FA-601', destination: '福岡', departureDate: tomorrow, departureTime: '11:00', status: 'Scheduled', gate: 'A2', totalSeats: 24 },
+    { id: 'f1', flightNumber: 'STA-101', destination: '東京（成田）', departureDate: today, departureTime: '10:00', status: 'Boarding', gate: 'A1', totalSeats: 24 },
+    { id: 'f2', flightNumber: 'STA-202', destination: '大阪（伊丹）', departureDate: today, departureTime: '12:30', status: 'Scheduled', gate: 'B3', totalSeats: 24 },
+    { id: 'f3', flightNumber: 'STA-303', destination: '札幌（新千歳）', departureDate: today, departureTime: '15:45', status: 'Scheduled', gate: 'C7', totalSeats: 24 },
+    { id: 'f4', flightNumber: 'STA-505', destination: '沖縄（那覇）', departureDate: today, departureTime: '17:15', status: 'Scheduled', gate: 'D2', totalSeats: 24 },
+    { id: 'f5', flightNumber: 'STA-601', destination: '福岡', departureDate: tomorrow, departureTime: '11:00', status: 'Scheduled', gate: 'A2', totalSeats: 24 },
   ];
 };
 

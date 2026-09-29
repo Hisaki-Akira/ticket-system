@@ -20,8 +20,10 @@ import { useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { getTicketUrl, saveLocalTicket, getLocalTickets, TicketPayload } from '../lib/ticketUrl';
 
-const COLUMNS = ['A', 'B', 'C', 'D'];
-const ROWS = 6;
+const LEFT_COLUMNS = ['A', 'C'];
+const CENTER_COLUMNS = ['D', 'E', 'G'];
+const RIGHT_COLUMNS = ['H', 'K'];
+const ROWS = 3;
 
 export default function GuestPortal() {
   const { flights, tickets, issueTicket } = useStore();
@@ -211,75 +213,112 @@ export default function GuestPortal() {
             <div className="bg-[#0C121E] p-6 rounded-xl border border-slate-800 flex flex-col items-center">
               {selectedFlightId ? (
                 <>
-                  <div className="text-[11px] font-mono tracking-widest text-slate-500 uppercase mb-4">
+                  <div className="text-[11px] font-mono tracking-widest text-slate-500 uppercase mb-3">
                     ▲ 機首方向 (FRONT)
                   </div>
 
-                  <div className="flex space-x-6 sm:space-x-8">
-                    {/* Left Columns (A, B) */}
-                    <div className="grid grid-cols-2 gap-2">
-                      {Array.from({ length: ROWS }).map((_, rowIdx) => (
-                        <React.Fragment key={`left-${rowIdx}`}>
-                          {COLUMNS.slice(0, 2).map((col) => {
-                            const seatId = `${rowIdx + 1}${col}`;
-                            const isOccupied = occupiedSeats.has(seatId);
-                            const isSelected = selectedSeat === seatId;
-                            return (
-                              <button
-                                key={seatId}
-                                disabled={isOccupied}
-                                onClick={() => setSelectedSeat(seatId)}
-                                className={`w-10 h-11 rounded font-mono text-xs font-bold transition-all focus:outline-none cursor-pointer ${
-                                  isOccupied 
-                                    ? 'bg-slate-800/40 text-slate-600 border border-slate-800 cursor-not-allowed' 
-                                    : isSelected 
-                                      ? 'bg-sky-500 text-white font-black shadow-lg shadow-sky-500/30 ring-2 ring-sky-400' 
-                                      : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
-                                }`}
-                              >
-                                {isOccupied ? '×' : seatId}
-                              </button>
-                            );
-                          })}
-                        </React.Fragment>
-                      ))}
-                    </div>
+                  {/* Seat Map Header: Window / Aisle Indicators */}
+                  <div className="flex items-center space-x-2 sm:space-x-3 text-center text-[10px] font-mono text-slate-400 mb-2">
+                    <div className="w-[72px] sm:w-[88px] text-slate-400">窓側 / A · C</div>
+                    <div className="w-5 text-slate-600">通路</div>
+                    <div className="w-[108px] sm:w-[132px] text-slate-400">中央 / D · E · G</div>
+                    <div className="w-5 text-slate-600">通路</div>
+                    <div className="w-[72px] sm:w-[88px] text-slate-400">窓側 / H · K</div>
+                  </div>
 
-                    {/* Aisle */}
-                    <div className="flex flex-col items-center justify-between py-2 text-[10px] font-mono text-slate-600">
-                      {Array.from({ length: ROWS }).map((_, i) => (
-                        <div key={`aisle-${i}`}>{i + 1}</div>
-                      ))}
-                    </div>
+                  {/* 3 Rows of 2-3-2 Seats */}
+                  <div className="space-y-2.5">
+                    {Array.from({ length: ROWS }).map((_, rowIdx) => {
+                      const rowNum = rowIdx + 1;
+                      return (
+                        <div key={`row-${rowNum}`} className="flex items-center space-x-2 sm:space-x-3">
+                          {/* Left Block (2 seats: A, C) */}
+                          <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+                            {LEFT_COLUMNS.map((col) => {
+                              const seatId = `${rowNum}${col}`;
+                              const isOccupied = occupiedSeats.has(seatId);
+                              const isSelected = selectedSeat === seatId;
+                              return (
+                                <button
+                                  key={seatId}
+                                  disabled={isOccupied}
+                                  onClick={() => setSelectedSeat(seatId)}
+                                  className={`w-9 sm:w-10 h-10 sm:h-11 rounded-lg font-mono text-xs font-bold transition-all focus:outline-none cursor-pointer ${
+                                    isOccupied 
+                                      ? 'bg-slate-800/40 text-slate-600 border border-slate-800 cursor-not-allowed' 
+                                      : isSelected 
+                                        ? 'bg-sky-500 text-white font-black shadow-lg shadow-sky-500/30 ring-2 ring-sky-400' 
+                                        : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                                  }`}
+                                >
+                                  {isOccupied ? '×' : seatId}
+                                </button>
+                              );
+                            })}
+                          </div>
 
-                    {/* Right Columns (C, D) */}
-                    <div className="grid grid-cols-2 gap-2">
-                      {Array.from({ length: ROWS }).map((_, rowIdx) => (
-                        <React.Fragment key={`right-${rowIdx}`}>
-                          {COLUMNS.slice(2, 4).map((col) => {
-                            const seatId = `${rowIdx + 1}${col}`;
-                            const isOccupied = occupiedSeats.has(seatId);
-                            const isSelected = selectedSeat === seatId;
-                            return (
-                              <button
-                                key={seatId}
-                                disabled={isOccupied}
-                                onClick={() => setSelectedSeat(seatId)}
-                                className={`w-10 h-11 rounded font-mono text-xs font-bold transition-all focus:outline-none cursor-pointer ${
-                                  isOccupied 
-                                    ? 'bg-slate-800/40 text-slate-600 border border-slate-800 cursor-not-allowed' 
-                                    : isSelected 
-                                      ? 'bg-sky-500 text-white font-black shadow-lg shadow-sky-500/30 ring-2 ring-sky-400' 
-                                      : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
-                                }`}
-                              >
-                                {isOccupied ? '×' : seatId}
-                              </button>
-                            );
-                          })}
-                        </React.Fragment>
-                      ))}
-                    </div>
+                          {/* Aisle 1 (Row Number) */}
+                          <div className="w-5 text-center text-xs font-mono font-bold text-slate-500">
+                            {rowNum}
+                          </div>
+
+                          {/* Center Block (3 seats: D, E, G) */}
+                          <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+                            {CENTER_COLUMNS.map((col) => {
+                              const seatId = `${rowNum}${col}`;
+                              const isOccupied = occupiedSeats.has(seatId);
+                              const isSelected = selectedSeat === seatId;
+                              return (
+                                <button
+                                  key={seatId}
+                                  disabled={isOccupied}
+                                  onClick={() => setSelectedSeat(seatId)}
+                                  className={`w-9 sm:w-10 h-10 sm:h-11 rounded-lg font-mono text-xs font-bold transition-all focus:outline-none cursor-pointer ${
+                                    isOccupied 
+                                      ? 'bg-slate-800/40 text-slate-600 border border-slate-800 cursor-not-allowed' 
+                                      : isSelected 
+                                        ? 'bg-sky-500 text-white font-black shadow-lg shadow-sky-500/30 ring-2 ring-sky-400' 
+                                        : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                                  }`}
+                                >
+                                  {isOccupied ? '×' : seatId}
+                                </button>
+                              );
+                            })}
+                          </div>
+
+                          {/* Aisle 2 (Row Number) */}
+                          <div className="w-5 text-center text-xs font-mono font-bold text-slate-500">
+                            {rowNum}
+                          </div>
+
+                          {/* Right Block (2 seats: H, K) */}
+                          <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+                            {RIGHT_COLUMNS.map((col) => {
+                              const seatId = `${rowNum}${col}`;
+                              const isOccupied = occupiedSeats.has(seatId);
+                              const isSelected = selectedSeat === seatId;
+                              return (
+                                <button
+                                  key={seatId}
+                                  disabled={isOccupied}
+                                  onClick={() => setSelectedSeat(seatId)}
+                                  className={`w-9 sm:w-10 h-10 sm:h-11 rounded-lg font-mono text-xs font-bold transition-all focus:outline-none cursor-pointer ${
+                                    isOccupied 
+                                      ? 'bg-slate-800/40 text-slate-600 border border-slate-800 cursor-not-allowed' 
+                                      : isSelected 
+                                        ? 'bg-sky-500 text-white font-black shadow-lg shadow-sky-500/30 ring-2 ring-sky-400' 
+                                        : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                                  }`}
+                                >
+                                  {isOccupied ? '×' : seatId}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
 
                   {/* Legend */}

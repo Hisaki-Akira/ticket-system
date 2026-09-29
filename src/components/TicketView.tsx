@@ -57,7 +57,7 @@ export default function TicketView() {
     departureTime: fallbackDepartureTime,
     gate: fallbackGate,
     status: fallbackStatus,
-    totalSeats: 24
+    totalSeats: 21
   };
 
   // Save to local storage on load

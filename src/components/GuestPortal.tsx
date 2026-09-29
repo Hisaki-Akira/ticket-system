@@ -129,7 +129,7 @@ export default function GuestPortal() {
         <div className="text-center space-y-1">
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">搭乗手続き (チェックイン)</h1>
           <p className="text-xs text-slate-500">
-            ご搭乗便・お名前・座席をご指定の上、搭乗券を発行してください。
+            ご搭乗便・お名前・座席をご指定の上、搭乗券を発行してください。<br />入力されたデータは暗号化されます。このデータが利用されることはありません。
           </p>
         </div>
 

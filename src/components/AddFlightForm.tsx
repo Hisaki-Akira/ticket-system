@@ -24,7 +24,7 @@ export default function AddFlightForm({ onSuccess }: AddFlightFormProps) {
     try {
       await addFlight({
         flightNumber: flightNumber.toUpperCase(),
-        destination: destination.toUpperCase(),
+        destination: destination.trim(),
         departureDate,
         departureTime,
         gate: gate.toUpperCase(),
@@ -46,111 +46,87 @@ export default function AddFlightForm({ onSuccess }: AddFlightFormProps) {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-      <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center space-x-2">
-        <Plane className="w-5 h-5 text-blue-600" />
-        <span>新規フライト登録（日時指定）</span>
-      </h2>
+    <div className="bg-[#11192C] p-6 rounded-xl border border-slate-800 space-y-5">
+      <div className="flex items-center space-x-2 border-b border-slate-800 pb-3">
+        <Plane className="w-4 h-4 text-sky-400" />
+        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-200">
+          新規フライト登録
+        </h2>
+      </div>
       
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3.5">
+          
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-gray-700">便名</label>
-            <div className="relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Plane className="h-5 w-5 text-gray-400" />
-              </div>
-              <input 
-                type="text" 
-                required
-                value={flightNumber}
-                onChange={(e) => setFlightNumber(e.target.value)}
-                placeholder="例: STA-101"
-                className="w-full pl-10 bg-white border border-gray-300 rounded-md px-3 py-2 text-gray-900 uppercase focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm placeholder:text-gray-400 placeholder:normal-case"
-              />
-            </div>
+            <label className="block text-xs font-mono text-slate-400">便名 (FLIGHT)</label>
+            <input 
+              type="text" 
+              required
+              value={flightNumber}
+              onChange={(e) => setFlightNumber(e.target.value)}
+              placeholder="例: STA-101"
+              className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 font-mono text-sm focus:outline-none focus:border-sky-500 uppercase placeholder:text-slate-600"
+            />
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-gray-700">行先</label>
-            <div className="relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <MapPin className="h-5 w-5 text-gray-400" />
-              </div>
-              <input 
-                type="text" 
-                required
-                value={destination}
-                onChange={(e) => setDestination(e.target.value)}
-                placeholder="例: 大阪（伊丹）"
-                className="w-full pl-10 bg-white border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm placeholder:text-gray-400"
-              />
-            </div>
+            <label className="block text-xs font-mono text-slate-400">行先 (DESTINATION)</label>
+            <input 
+              type="text" 
+              required
+              value={destination}
+              onChange={(e) => setDestination(e.target.value)}
+              placeholder="例: 大阪（伊丹）"
+              className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-sky-500 placeholder:text-slate-600"
+            />
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-gray-700">出発日</label>
-            <div className="relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Calendar className="h-5 w-5 text-gray-400" />
-              </div>
-              <input 
-                type="date" 
-                required
-                value={departureDate}
-                onChange={(e) => setDepartureDate(e.target.value)}
-                className="w-full pl-10 bg-white border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              />
-            </div>
+            <label className="block text-xs font-mono text-slate-400">出発日 (DATE)</label>
+            <input 
+              type="date" 
+              required
+              value={departureDate}
+              onChange={(e) => setDepartureDate(e.target.value)}
+              className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 font-mono text-sm focus:outline-none focus:border-sky-500"
+            />
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-gray-700">出発時刻</label>
-            <div className="relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Clock className="h-5 w-5 text-gray-400" />
-              </div>
-              <input 
-                type="time" 
-                required
-                value={departureTime}
-                onChange={(e) => setDepartureTime(e.target.value)}
-                className="w-full pl-10 bg-white border border-gray-300 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              />
-            </div>
+            <label className="block text-xs font-mono text-slate-400">出発時刻 (TIME)</label>
+            <input 
+              type="time" 
+              required
+              value={departureTime}
+              onChange={(e) => setDepartureTime(e.target.value)}
+              className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 font-mono text-sm focus:outline-none focus:border-sky-500"
+            />
           </div>
 
-          <div className="space-y-1.5 md:col-span-2 lg:col-span-2">
-            <label className="block text-sm font-medium text-gray-700">搭乗口（ゲート）</label>
-            <div className="relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <MapPin className="h-5 w-5 text-gray-400" />
-              </div>
-              <input 
-                type="text" 
-                required
-                value={gate}
-                onChange={(e) => setGate(e.target.value)}
-                placeholder="例: A1, B3"
-                className="w-full pl-10 bg-white border border-gray-300 rounded-md px-3 py-2 text-gray-900 uppercase focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm placeholder:text-gray-400 placeholder:normal-case"
-              />
-            </div>
+          <div className="space-y-1.5">
+            <label className="block text-xs font-mono text-slate-400">搭乗口 (GATE)</label>
+            <input 
+              type="text" 
+              required
+              value={gate}
+              onChange={(e) => setGate(e.target.value)}
+              placeholder="例: A1"
+              className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 font-mono text-sm focus:outline-none focus:border-sky-500 uppercase placeholder:text-slate-600"
+            />
           </div>
+
         </div>
         
         <div className="pt-2 flex justify-end">
           <button 
             type="submit"
             disabled={isSubmitting || !flightNumber || !destination || !departureDate || !departureTime || !gate}
-            className="flex justify-center py-2.5 px-6 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-blue-900 hover:bg-blue-800 disabled:bg-gray-300 disabled:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-900 cursor-pointer disabled:cursor-not-allowed"
+            className="flex items-center space-x-1.5 py-2 px-5 rounded-lg text-xs font-bold text-white bg-sky-600 hover:bg-sky-500 disabled:bg-slate-800 disabled:text-slate-600 transition-colors cursor-pointer disabled:cursor-not-allowed"
           >
-            {isSubmitting ? '登録中...' : 'フライトを登録する'}
+            <span>{isSubmitting ? '登録中...' : 'フライトを登録する'}</span>
           </button>
         </div>
       </form>
-      <div className="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-md text-sm text-blue-800">
-        <p><strong>注記:</strong> フライトを登録すると、指定された日付・時刻の便として運行され、自動的に24席分（1A〜6D）の空席データが生成されます。</p>
-      </div>
     </div>
   );
 }

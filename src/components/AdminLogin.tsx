@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Lock, User, PlaneTakeoff, AlertCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Lock, User, PlaneTakeoff, AlertCircle, ArrowLeft } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 
 interface AdminLoginProps {
   onLogin: () => void;
@@ -22,81 +22,98 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
       onLogin();
       navigate('/admin');
     } else {
-      setError('IDまたはパスワードが間違っています。');
+      setError('IDまたはパスワードが正しくありません。');
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center text-blue-900 mb-4">
-          <PlaneTakeoff className="w-12 h-12" />
+    <div className="min-h-screen bg-[#0A0E17] text-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center space-y-3">
+        <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-sky-600 text-white shadow-lg shadow-sky-950/50">
+          <PlaneTakeoff className="w-6 h-6" />
         </div>
-        <h2 className="mt-2 text-center text-3xl font-extrabold text-gray-900 tracking-tight">
-          スタッフポータル
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          ログインしてフライト情報を管理
-        </p>
+        <div>
+          <h2 className="text-xl font-bold tracking-tight text-white">
+            運航管理コンソール ログイン
+          </h2>
+          <p className="mt-1 text-xs font-mono tracking-widest text-sky-400">
+            SHIBAURA TECH AIRWAYS
+          </p>
+        </div>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-sm sm:rounded-xl sm:px-10 border border-gray-200">
-          <form className="space-y-6" onSubmit={handleLogin}>
+      <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-[#11192C] py-8 px-6 sm:px-8 border border-slate-800 rounded-2xl shadow-2xl space-y-6">
+          <form className="space-y-4" onSubmit={handleLogin}>
             {error && (
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md flex items-start">
-                <AlertCircle className="w-5 h-5 text-red-500 mr-3 flex-shrink-0" />
-                <p className="text-sm text-red-700">{error}</p>
+              <div className="bg-rose-500/10 border border-rose-500/30 p-3 rounded-lg flex items-center space-x-2 text-xs text-rose-300">
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                <span>{error}</span>
               </div>
             )}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                スタッフID
+            <div className="space-y-1.5">
+              <label className="block text-xs font-mono text-slate-400">
+                管理者ID (STAFF ID)
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                  <User className="h-4 w-4" />
                 </div>
                 <input
                   type="text"
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2.5 border"
-                  placeholder="Enter your staff ID"
+                  className="w-full pl-9 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-xs focus:outline-none focus:border-sky-500 placeholder:text-slate-600"
+                  placeholder="admin"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                パスワード
+            <div className="space-y-1.5">
+              <label className="block text-xs font-mono text-slate-400">
+                パスワード (PASSWORD)
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                  <Lock className="h-4 w-4" />
                 </div>
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2.5 border"
+                  className="w-full pl-9 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-xs focus:outline-none focus:border-sky-500 placeholder:text-slate-600"
                   placeholder="••••••••"
                 />
               </div>
             </div>
 
-            <div>
+            <div className="pt-2">
               <button
                 type="submit"
-                className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-900 transition-colors"
+                className="w-full py-2.5 px-4 rounded-lg text-xs font-bold text-white bg-sky-600 hover:bg-sky-500 transition-colors shadow-md shadow-sky-950/40 cursor-pointer"
               >
                 ログイン
               </button>
             </div>
           </form>
+
+          <div className="pt-2 border-t border-slate-800 text-center space-y-2">
+            <p className="text-[11px] font-mono text-slate-500">
+              ※ 初期認証情報: admin / password123
+            </p>
+            <div>
+              <Link 
+                to="/" 
+                className="inline-flex items-center space-x-1 text-xs text-slate-400 hover:text-white transition-colors"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>出発案内ボードへ戻る</span>
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>

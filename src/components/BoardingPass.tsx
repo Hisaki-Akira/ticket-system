@@ -59,7 +59,7 @@ export default function BoardingPass({ ticket, flight }: BoardingPassProps) {
 
         <div className="col-span-2 border-b border-gray-300 pb-2">
           <p className="text-xs text-slate-500">区間</p>
-          <p className="text-lg sm:text-xl font-bold mt-1 text-slate-900">東京（成田）— {flight.destination}</p>
+          <p className="text-lg sm:text-xl font-bold mt-1 text-slate-900">芝浦工大柏（SKW）— {flight.destination}</p>
         </div>
       </div>
 

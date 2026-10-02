@@ -437,7 +437,7 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
           </div>
         ) : activeTab === 'manage' ? (
           <div className="space-y-6">
-            <AddFlightForm onSuccess={() => setActiveTab('issue')} />
+            <AddFlightForm onSuccess={() => {}} />
             
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-xs space-y-4">
               <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-gray-200 pb-3">

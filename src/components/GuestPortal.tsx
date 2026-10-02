@@ -19,9 +19,10 @@ import BoardingPass from './BoardingPass';
 import { useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { getTicketUrl, saveLocalTicket, getLocalTickets, TicketPayload } from '../lib/ticketUrl';
+import { isFlightPassed } from '../lib/mockStore';
 
 const LEFT_COLUMNS = ['A', 'C'];
-const CENTER_COLUMNS = ['D', 'E', 'G'];
+const CENTER_COLUMNS = ['D', 'E', 'F', 'G'];
 const RIGHT_COLUMNS = ['H', 'K'];
 const ROWS = 3;
 
@@ -42,7 +43,7 @@ export default function GuestPortal() {
   }, []);
 
   const availableFlights = flights
-    .filter(f => f.status !== 'Departed')
+    .filter(f => f.status !== 'Departed' && !isFlightPassed(f))
     .sort((a, b) => {
       const cmpDate = a.departureDate.localeCompare(b.departureDate);
       if (cmpDate !== 0) return cmpDate;
@@ -129,7 +130,7 @@ export default function GuestPortal() {
         <div className="text-center space-y-1">
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">搭乗手続き (チェックイン)</h1>
           <p className="text-xs text-slate-500">
-            ご搭乗便・お名前・座席をご指定の上、搭乗券を発行してください。<br />入力されたデータは暗号化されます。このデータが利用されることはありません。
+            ご搭乗便・お名前・座席をご指定の上、搭乗券を発行してください。
           </p>
         </div>
 
@@ -197,11 +198,11 @@ export default function GuestPortal() {
             </div>
           </div>
 
-          {/* Step 3: Seat Map (2-3-2 with 3 rows) */}
+          {/* Step 3: Seat Map (2-4-2 with 3 rows) */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold text-slate-700">
-                3. 座席指定 (2-3-2列)
+                3. 座席指定 (2-4-2列)
               </label>
               {selectedSeat && (
                 <span className="text-xs font-mono font-bold text-slate-900">
@@ -210,7 +211,7 @@ export default function GuestPortal() {
               )}
             </div>
             
-            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 flex flex-col items-center">
+            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 flex flex-col items-center overflow-x-auto">
               {selectedFlightId ? (
                 <>
                   <div className="text-[11px] font-bold text-slate-500 mb-3">
@@ -218,22 +219,22 @@ export default function GuestPortal() {
                   </div>
 
                   {/* Seat Map Header: Window / Aisle Indicators */}
-                  <div className="flex items-center space-x-2 sm:space-x-3 text-center text-[10px] text-slate-500 mb-2">
-                    <div className="w-[72px] sm:w-[88px]">窓側 / A · C</div>
-                    <div className="w-5">通路</div>
-                    <div className="w-[108px] sm:w-[132px]">中央 / D · E · G</div>
-                    <div className="w-5">通路</div>
-                    <div className="w-[72px] sm:w-[88px]">窓側 / H · K</div>
+                  <div className="flex items-center space-x-1.5 sm:space-x-3 text-center text-[10px] text-slate-500 mb-2">
+                    <div className="w-[68px] sm:w-[84px]">窓側 / A · C</div>
+                    <div className="w-4 sm:w-5">通路</div>
+                    <div className="w-[136px] sm:w-[168px]">中央 / D · E · F · G</div>
+                    <div className="w-4 sm:w-5">通路</div>
+                    <div className="w-[68px] sm:w-[84px]">窓側 / H · K</div>
                   </div>
 
-                  {/* 3 Rows of 2-3-2 Seats */}
+                  {/* 3 Rows of 2-4-2 Seats */}
                   <div className="space-y-2.5">
                     {Array.from({ length: ROWS }).map((_, rowIdx) => {
                       const rowNum = rowIdx + 1;
                       return (
-                        <div key={`row-${rowNum}`} className="flex items-center space-x-2 sm:space-x-3">
+                        <div key={`row-${rowNum}`} className="flex items-center space-x-1.5 sm:space-x-3">
                           {/* Left Block (2 seats: A, C) */}
-                          <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+                          <div className="grid grid-cols-2 gap-1 sm:gap-1.5">
                             {LEFT_COLUMNS.map((col) => {
                               const seatId = `${rowNum}${col}`;
                               const isOccupied = occupiedSeats.has(seatId);
@@ -243,7 +244,7 @@ export default function GuestPortal() {
                                   key={seatId}
                                   disabled={isOccupied}
                                   onClick={() => setSelectedSeat(seatId)}
-                                  className={`w-9 sm:w-10 h-10 sm:h-11 rounded-lg font-mono text-xs font-bold transition-all focus:outline-none cursor-pointer ${
+                                  className={`w-8 sm:w-10 h-9 sm:h-11 rounded-lg font-mono text-[11px] sm:text-xs font-bold transition-all focus:outline-none cursor-pointer ${
                                     isOccupied 
                                       ? 'bg-gray-200 text-gray-400 border border-gray-200 cursor-not-allowed' 
                                       : isSelected 
@@ -258,12 +259,12 @@ export default function GuestPortal() {
                           </div>
 
                           {/* Aisle 1 (Row Number) */}
-                          <div className="w-5 text-center text-xs font-mono font-bold text-slate-500">
+                          <div className="w-4 sm:w-5 text-center text-xs font-mono font-bold text-slate-500">
                             {rowNum}
                           </div>
 
-                          {/* Center Block (3 seats: D, E, G) */}
-                          <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+                          {/* Center Block (4 seats: D, E, F, G) */}
+                          <div className="grid grid-cols-4 gap-1 sm:gap-1.5">
                             {CENTER_COLUMNS.map((col) => {
                               const seatId = `${rowNum}${col}`;
                               const isOccupied = occupiedSeats.has(seatId);
@@ -273,7 +274,7 @@ export default function GuestPortal() {
                                   key={seatId}
                                   disabled={isOccupied}
                                   onClick={() => setSelectedSeat(seatId)}
-                                  className={`w-9 sm:w-10 h-10 sm:h-11 rounded-lg font-mono text-xs font-bold transition-all focus:outline-none cursor-pointer ${
+                                  className={`w-8 sm:w-10 h-9 sm:h-11 rounded-lg font-mono text-[11px] sm:text-xs font-bold transition-all focus:outline-none cursor-pointer ${
                                     isOccupied 
                                       ? 'bg-gray-200 text-gray-400 border border-gray-200 cursor-not-allowed' 
                                       : isSelected 
@@ -288,12 +289,12 @@ export default function GuestPortal() {
                           </div>
 
                           {/* Aisle 2 (Row Number) */}
-                          <div className="w-5 text-center text-xs font-mono font-bold text-slate-500">
+                          <div className="w-4 sm:w-5 text-center text-xs font-mono font-bold text-slate-500">
                             {rowNum}
                           </div>
 
                           {/* Right Block (2 seats: H, K) */}
-                          <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+                          <div className="grid grid-cols-2 gap-1 sm:gap-1.5">
                             {RIGHT_COLUMNS.map((col) => {
                               const seatId = `${rowNum}${col}`;
                               const isOccupied = occupiedSeats.has(seatId);
@@ -303,7 +304,7 @@ export default function GuestPortal() {
                                   key={seatId}
                                   disabled={isOccupied}
                                   onClick={() => setSelectedSeat(seatId)}
-                                  className={`w-9 sm:w-10 h-10 sm:h-11 rounded-lg font-mono text-xs font-bold transition-all focus:outline-none cursor-pointer ${
+                                  className={`w-8 sm:w-10 h-9 sm:h-11 rounded-lg font-mono text-[11px] sm:text-xs font-bold transition-all focus:outline-none cursor-pointer ${
                                     isOccupied 
                                       ? 'bg-gray-200 text-gray-400 border border-gray-200 cursor-not-allowed' 
                                       : isSelected 

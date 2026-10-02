@@ -3,7 +3,7 @@ import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom'
 import { useStore } from '../lib/useStore';
 import { Ticket, Flight } from '../lib/firebase';
 import { saveLocalTicket, getLocalTickets, removeLocalTicket, TicketPayload } from '../lib/ticketUrl';
-import { getTodayDateStr } from '../lib/mockStore';
+import { getTodayDateStr, getEffectiveFlightStatus, isFlightPassed } from '../lib/mockStore';
 import { QRCodeSVG } from 'qrcode.react';
 import { 
   Plane, 
@@ -54,7 +54,7 @@ export default function TicketView() {
     departureTime: fallbackDepartureTime,
     gate: fallbackGate,
     status: fallbackStatus,
-    totalSeats: 21
+    totalSeats: 24
   };
 
   // Save to local storage on load
@@ -86,7 +86,8 @@ export default function TicketView() {
     'Delayed': { label: '遅延', bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200' }
   };
 
-  const currentStatus = statusConfig[flight.status] || statusConfig['Scheduled'];
+  const effectiveStatus = getEffectiveFlightStatus(flight);
+  const currentStatus = statusConfig[effectiveStatus] || statusConfig['Scheduled'];
 
   return (
     <div className="min-h-screen bg-gray-50 text-slate-900 font-sans pb-16">

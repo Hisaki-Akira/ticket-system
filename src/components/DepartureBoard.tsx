@@ -3,7 +3,7 @@ import { useStore } from '../lib/useStore';
 import { Plane, Calendar, Bookmark, X, Shield, ArrowRight, Ticket as TicketIcon } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getLocalTickets, TicketPayload } from '../lib/ticketUrl';
-import { getTodayDateStr, getTomorrowDateStr } from '../lib/mockStore';
+import { getTodayDateStr, getTomorrowDateStr, isFlightPassed, getEffectiveFlightStatus } from '../lib/mockStore';
 
 export default function DepartureBoard() {
   const { flights, tickets } = useStore();
@@ -11,6 +11,9 @@ export default function DepartureBoard() {
   const [savedTickets, setSavedTickets] = useState<TicketPayload[]>([]);
   const [showSavedModal, setShowSavedModal] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<string>(getTodayDateStr());
+  const [hideDeparted, setHideDeparted] = useState<boolean>(() => {
+    return localStorage.getItem('sta_hide_departed') === 'true';
+  });
   const navigate = useNavigate();
 
   const todayStr = getTodayDateStr();
@@ -50,8 +53,26 @@ export default function DepartureBoard() {
     }
   };
 
+  const isDeparted = (flight: { departureDate: string; departureTime: string; status: string }) => {
+    return flight.status === 'Departed' || isFlightPassed(flight, time);
+  };
+
   // Filter ONLY flights for the selected date
-  const dayFlights = flights.filter(f => f.departureDate === selectedDate);
+  const totalDayFlights = flights.filter(f => f.departureDate === selectedDate);
+  const departedCount = totalDayFlights.filter(f => isDeparted(f)).length;
+
+  const filteredDayFlights = totalDayFlights.filter(f => {
+    if (hideDeparted && isDeparted(f)) return false;
+    return true;
+  });
+
+  const sortedDayFlights = [...filteredDayFlights].sort((a, b) => {
+    const aPassed = isDeparted(a);
+    const bPassed = isDeparted(b);
+    if (aPassed && !bPassed) return 1;
+    if (!aPassed && bPassed) return -1;
+    return a.departureTime.localeCompare(b.departureTime);
+  });
 
   const formatDateLabel = (dateStr: string) => {
     try {
@@ -81,7 +102,7 @@ export default function DepartureBoard() {
                 Shibaura Tech Airways
               </span>
               <p className="text-xs text-slate-500">
-                国際線 出発案内
+                国内線 出発案内
               </p>
             </div>
           </div>
@@ -102,9 +123,9 @@ export default function DepartureBoard() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 space-y-6">
 
         {/* Action Controls & Date Selection */}
-        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 bg-white p-3.5 rounded-xl border border-gray-200 shadow-xs">
+        <div className="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4 bg-white p-3.5 rounded-xl border border-gray-200 shadow-xs">
           
-          {/* Date Selector */}
+          {/* Date Selector & Hide Departed Toggle */}
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs font-bold text-slate-600 px-1 flex items-center gap-1">
               <Calendar className="w-3.5 h-3.5 text-slate-500" />
@@ -143,10 +164,32 @@ export default function DepartureBoard() {
                 className="bg-white border border-gray-300 rounded-md px-2 py-1 text-xs text-slate-700 font-mono focus:outline-none focus:border-slate-900 cursor-pointer"
               />
             </div>
+
+            {/* Toggle: Hide Departed Flights */}
+            <div className="flex items-center pl-2 sm:border-l sm:border-gray-200">
+              <label className="flex items-center space-x-2 text-xs text-slate-700 bg-gray-50 hover:bg-gray-100 border border-gray-300 px-2.5 py-1.5 rounded-lg cursor-pointer transition-colors select-none">
+                <input
+                  type="checkbox"
+                  checked={hideDeparted}
+                  onChange={(e) => {
+                    const val = e.target.checked;
+                    setHideDeparted(val);
+                    localStorage.setItem('sta_hide_departed', String(val));
+                  }}
+                  className="rounded border-gray-300 text-slate-900 focus:ring-slate-900 cursor-pointer"
+                />
+                <span className="font-medium">出発済みの便を非表示</span>
+                {departedCount > 0 && (
+                  <span className="text-[10px] text-slate-500 bg-white border border-gray-200 px-1.5 py-0.5 rounded font-mono">
+                    {departedCount}便
+                  </span>
+                )}
+              </label>
+            </div>
           </div>
 
           {/* Action Links */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 flex-wrap">
             {savedTickets.length > 0 && (
               <button 
                 onClick={() => setShowSavedModal(true)}
@@ -184,83 +227,110 @@ export default function DepartureBoard() {
 
           {/* Flight Rows */}
           <div className="divide-y divide-gray-100">
-            {[...dayFlights]
-              .sort((a, b) => {
-                if (a.status === 'Departed' && b.status !== 'Departed') return 1;
-                if (a.status !== 'Departed' && b.status === 'Departed') return -1;
-                return a.departureTime.localeCompare(b.departureTime);
-              })
-              .map(flight => {
-                const flightTickets = tickets.filter(t => t.flightId === flight.id);
-                const availableSeats = Math.max(0, flight.totalSeats - flightTickets.length);
-                const loadPercentage = flight.totalSeats > 0 ? Math.round((flightTickets.length / flight.totalSeats) * 100) : 0;
-                const statusInfo = getStatusDisplay(flight.status);
-                
-                return (
-                  <div 
-                    key={flight.id} 
-                    className="flex flex-col md:grid md:grid-cols-12 gap-2 md:gap-4 px-6 py-4 md:items-center hover:bg-gray-50/80 transition-colors"
-                  >
-                    
-                    {/* Time & Mobile Status Header */}
-                    <div className="flex justify-between items-center md:contents">
-                      <div className="md:col-span-2 font-mono font-bold text-xl text-slate-900 tracking-wide tabular-nums">
+            {sortedDayFlights.map(flight => {
+              const flightTickets = tickets.filter(t => t.flightId === flight.id);
+              const availableSeats = Math.max(0, flight.totalSeats - flightTickets.length);
+              const loadPercentage = flight.totalSeats > 0 ? Math.round((flightTickets.length / flight.totalSeats) * 100) : 0;
+              const passed = isDeparted(flight);
+              const effectiveStatus = passed ? 'Departed' : flight.status;
+              const statusInfo = getStatusDisplay(effectiveStatus);
+              
+              return (
+                <div 
+                  key={flight.id} 
+                  className={`flex flex-col md:grid md:grid-cols-12 gap-2 md:gap-4 px-6 py-4 md:items-center transition-colors ${
+                    passed 
+                      ? 'bg-gray-50/70 opacity-60 hover:opacity-100 border-l-4 border-l-gray-300' 
+                      : 'hover:bg-gray-50/80 border-l-4 border-l-transparent'
+                  }`}
+                >
+                  
+                  {/* Time & Mobile Status Header */}
+                  <div className="flex justify-between items-center md:contents">
+                    <div className="md:col-span-2 font-mono font-bold text-xl tracking-wide tabular-nums flex items-baseline space-x-2">
+                      <span className={passed ? 'text-slate-400' : 'text-slate-900'}>
                         {flight.departureTime}
-                      </div>
-
-                      <div className="md:col-span-2 flex md:justify-end md:order-6">
-                        <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${statusInfo.className}`}>
-                          {statusInfo.label}
+                      </span>
+                      {passed && (
+                        <span className="text-[11px] font-sans font-normal text-slate-500">
+                          (出発済)
                         </span>
-                      </div>
+                      )}
                     </div>
 
-                    {/* Destination */}
-                    <div className="md:col-span-3 flex items-baseline md:order-2">
-                      <span className="text-base font-bold text-slate-900">
-                        {flight.destination}
+                    <div className="md:col-span-2 flex md:justify-end md:order-6">
+                      <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${statusInfo.className}`}>
+                        {statusInfo.label}
                       </span>
                     </div>
-
-                    {/* Flight Number */}
-                    <div className="md:col-span-2 font-mono font-bold text-slate-700 text-sm md:text-base md:order-3">
-                      {flight.flightNumber}
-                    </div>
-
-                    {/* Gate */}
-                    <div className="flex items-center justify-between md:justify-center md:col-span-1 md:order-4 border-t border-gray-100 md:border-none pt-2 md:pt-0 mt-2 md:mt-0">
-                      <span className="text-xs text-slate-500 md:hidden">搭乗口:</span>
-                      <span className="font-mono font-bold text-base text-slate-800 bg-gray-100 px-2.5 py-0.5 rounded border border-gray-200">
-                        {flight.gate}
-                      </span>
-                    </div>
-
-                    {/* Seats & Load bar */}
-                    <div className="md:col-span-2 flex flex-col justify-center space-y-1.5 md:order-5">
-                      <div className="flex justify-between text-xs font-mono text-slate-600">
-                        <span>残席: <strong className="text-slate-900">{availableSeats}</strong> / {flight.totalSeats}</span>
-                        <span>{loadPercentage}%</span>
-                      </div>
-                      <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-slate-800 rounded-full transition-all duration-500"
-                          style={{ width: `${loadPercentage}%` }}
-                        ></div>
-                      </div>
-                    </div>
-
                   </div>
-                );
-              })}
-            
-            {dayFlights.length === 0 && (
-              <div className="p-16 text-center text-slate-500 space-y-2">
+
+                  {/* Destination */}
+                  <div className="md:col-span-3 flex items-baseline md:order-2">
+                    <span className={`text-base font-bold ${passed ? 'text-slate-600' : 'text-slate-900'}`}>
+                      {flight.destination}
+                    </span>
+                  </div>
+
+                  {/* Flight Number */}
+                  <div className={`md:col-span-2 font-mono font-bold text-sm md:text-base md:order-3 ${passed ? 'text-slate-500' : 'text-slate-700'}`}>
+                    {flight.flightNumber}
+                  </div>
+
+                  {/* Gate */}
+                  <div className="flex items-center justify-between md:justify-center md:col-span-1 md:order-4 border-t border-gray-100 md:border-none pt-2 md:pt-0 mt-2 md:mt-0">
+                    <span className="text-xs text-slate-500 md:hidden">搭乗口:</span>
+                    <span className={`font-mono font-bold text-base px-2.5 py-0.5 rounded border ${
+                      passed ? 'bg-gray-100 text-slate-500 border-gray-200' : 'bg-gray-100 text-slate-800 border-gray-200'
+                    }`}>
+                      {flight.gate}
+                    </span>
+                  </div>
+
+                  {/* Seats & Load bar */}
+                  <div className="md:col-span-2 flex flex-col justify-center space-y-1.5 md:order-5">
+                    <div className="flex justify-between text-xs font-mono text-slate-600">
+                      <span>残席: <strong className={passed ? 'text-slate-600' : 'text-slate-900'}>{availableSeats}</strong> / {flight.totalSeats}</span>
+                      <span>{loadPercentage}%</span>
+                    </div>
+                    <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full transition-all duration-500 ${
+                          passed ? 'bg-gray-400' : 'bg-slate-800'
+                        }`}
+                        style={{ width: `${loadPercentage}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                </div>
+              );
+            })}
+          
+            {sortedDayFlights.length === 0 && (
+              <div className="p-16 text-center text-slate-500 space-y-3">
                 <p className="text-sm font-medium text-slate-700">
-                  {formatDateLabel(selectedDate)} に運航予定のフライトはありません。
+                  {totalDayFlights.length > 0 && hideDeparted 
+                    ? `${formatDateLabel(selectedDate)} の予定フライト（全${totalDayFlights.length}便）はすべて出発済みです。`
+                    : `${formatDateLabel(selectedDate)} に運航予定のフライトはありません。`}
                 </p>
-                <p className="text-xs text-slate-500">
-                  運航ダイヤの確認またはフライト追加は運航管理画面より行えます。
-                </p>
+                {totalDayFlights.length > 0 && hideDeparted ? (
+                  <div>
+                    <button
+                      onClick={() => {
+                        setHideDeparted(false);
+                        localStorage.setItem('sta_hide_departed', 'false');
+                      }}
+                      className="text-xs text-slate-800 hover:text-slate-950 font-bold underline cursor-pointer"
+                    >
+                      出発済みの便を表示する
+                    </button>
+                  </div>
+                ) : (
+                  <p className="text-xs text-slate-500">
+                    運航ダイヤの確認またはフライト追加は運航管理画面より行えます。
+                  </p>
+                )}
               </div>
             )}
           </div>

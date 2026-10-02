@@ -23,9 +23,10 @@ import AddFlightForm from './AddFlightForm';
 import { useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { getTicketUrl, saveLocalTicket } from '../lib/ticketUrl';
+import { isFlightPassed } from '../lib/mockStore';
 
 const LEFT_COLUMNS = ['A', 'C'];
-const CENTER_COLUMNS = ['D', 'E', 'G'];
+const CENTER_COLUMNS = ['D', 'E', 'F', 'G'];
 const RIGHT_COLUMNS = ['H', 'K'];
 const ROWS = 3;
 
@@ -42,6 +43,8 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
     clearAllTickets, 
     updateStatus, 
     deleteFlight,
+    deletePassedFlights,
+    markPassedFlightsDeparted,
     resetData,
   } = useStore();
 
@@ -113,6 +116,23 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
   const handleResetData = async () => {
     if (window.confirm('初期サンプルデータにリセットしますか？')) {
       await resetData();
+    }
+  };
+
+  const handleMarkPassedDeparted = async () => {
+    const targetDate = filterManageDate === 'all' ? undefined : filterManageDate;
+    const count = await markPassedFlightsDeparted(targetDate);
+    alert(`${count}件の予定超過便を「出発済」に更新しました。`);
+  };
+
+  const handleDeletePassedFlights = async () => {
+    const targetDate = filterManageDate === 'all' ? undefined : filterManageDate;
+    const msg = targetDate 
+      ? `【${targetDate}】の予定時刻を過ぎたフライトを一括削除しますか？\n（関連する搭乗券データも同時に消去されます）`
+      : `予定時刻を過ぎたすべてのフライトを一括削除しますか？\n（関連する搭乗券データも同時に消去されます）`;
+    if (window.confirm(msg)) {
+      const count = await deletePassedFlights(targetDate);
+      alert(`${count}件の便を削除しました。`);
     }
   };
 
@@ -249,11 +269,14 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
                   }}
                   className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-slate-800 text-xs focus:outline-none focus:border-slate-900 font-medium"
                 >
-                  {sortedFlights.map(f => (
-                    <option key={f.id} value={f.id}>
-                      【{f.departureDate} {f.departureTime}発】 {f.flightNumber} - {f.destination}
-                    </option>
-                  ))}
+                  {sortedFlights.map(f => {
+                    const passed = isFlightPassed(f);
+                    return (
+                      <option key={f.id} value={f.id}>
+                        {passed ? '【出発済】' : ''}【{f.departureDate} {f.departureTime}発】 {f.flightNumber} - {f.destination} {passed ? '(受付終了)' : ''}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
 
@@ -285,37 +308,37 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
               </div>
             </div>
 
-            {/* Seat Map Section (2-3-2 with 3 rows) */}
+            {/* Seat Map Section (2-4-2 with 3 rows) */}
             <div className="lg:col-span-7 bg-white p-6 rounded-xl border border-gray-200 shadow-xs flex flex-col items-center">
               <div className="w-full flex items-center justify-between border-b border-gray-200 pb-3 mb-4">
-                <span className="text-xs font-bold text-slate-800">座席指定マップ (2-3-2列)</span>
+                <span className="text-xs font-bold text-slate-800">座席指定マップ (2-4-2列)</span>
                 {selectedSeat && (
                   <span className="text-xs font-mono font-bold text-slate-900">選択中: {selectedSeat}席</span>
                 )}
               </div>
               
-              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 flex flex-col items-center">
+              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 flex flex-col items-center overflow-x-auto w-full">
                 <div className="text-[11px] font-bold text-slate-500 mb-3">
                   ▲ 機首方向
                 </div>
 
                 {/* Seat Map Header */}
-                <div className="flex items-center space-x-2 sm:space-x-3 text-center text-[10px] text-slate-500 mb-2">
-                  <div className="w-[72px] sm:w-[88px]">窓側 / A · C</div>
-                  <div className="w-5">通路</div>
-                  <div className="w-[108px] sm:w-[132px]">中央 / D · E · G</div>
-                  <div className="w-5">通路</div>
-                  <div className="w-[72px] sm:w-[88px]">窓側 / H · K</div>
+                <div className="flex items-center space-x-1.5 sm:space-x-3 text-center text-[10px] text-slate-500 mb-2">
+                  <div className="w-[68px] sm:w-[84px]">窓側 / A · C</div>
+                  <div className="w-4 sm:w-5">通路</div>
+                  <div className="w-[136px] sm:w-[168px]">中央 / D · E · F · G</div>
+                  <div className="w-4 sm:w-5">通路</div>
+                  <div className="w-[68px] sm:w-[84px]">窓側 / H · K</div>
                 </div>
 
-                {/* 3 Rows of 2-3-2 Seats */}
+                {/* 3 Rows of 2-4-2 Seats */}
                 <div className="space-y-2.5">
                   {Array.from({ length: ROWS }).map((_, rowIdx) => {
                     const rowNum = rowIdx + 1;
                     return (
-                      <div key={`staff-row-${rowNum}`} className="flex items-center space-x-2 sm:space-x-3">
+                      <div key={`staff-row-${rowNum}`} className="flex items-center space-x-1.5 sm:space-x-3">
                         {/* Left Block (2 seats: A, C) */}
-                        <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+                        <div className="grid grid-cols-2 gap-1 sm:gap-1.5">
                           {LEFT_COLUMNS.map((col) => {
                             const seatId = `${rowNum}${col}`;
                             const isOccupied = occupiedSeats.has(seatId);
@@ -325,7 +348,7 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
                                 key={seatId}
                                 disabled={isOccupied}
                                 onClick={() => setSelectedSeat(seatId)}
-                                className={`w-9 sm:w-10 h-10 sm:h-11 rounded-lg font-mono text-xs font-bold transition-all focus:outline-none cursor-pointer ${
+                                className={`w-8 sm:w-10 h-9 sm:h-11 rounded-lg font-mono text-[11px] sm:text-xs font-bold transition-all focus:outline-none cursor-pointer ${
                                   isOccupied 
                                     ? 'bg-gray-200 text-gray-400 border border-gray-200 cursor-not-allowed' 
                                     : isSelected 
@@ -340,12 +363,12 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
                         </div>
 
                         {/* Aisle 1 (Row Number) */}
-                        <div className="w-5 text-center text-xs font-mono font-bold text-slate-500">
+                        <div className="w-4 sm:w-5 text-center text-xs font-mono font-bold text-slate-500">
                           {rowNum}
                         </div>
 
-                        {/* Center Block (3 seats: D, E, G) */}
-                        <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+                        {/* Center Block (4 seats: D, E, F, G) */}
+                        <div className="grid grid-cols-4 gap-1 sm:gap-1.5">
                           {CENTER_COLUMNS.map((col) => {
                             const seatId = `${rowNum}${col}`;
                             const isOccupied = occupiedSeats.has(seatId);
@@ -355,7 +378,7 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
                                 key={seatId}
                                 disabled={isOccupied}
                                 onClick={() => setSelectedSeat(seatId)}
-                                className={`w-9 sm:w-10 h-10 sm:h-11 rounded-lg font-mono text-xs font-bold transition-all focus:outline-none cursor-pointer ${
+                                className={`w-8 sm:w-10 h-9 sm:h-11 rounded-lg font-mono text-[11px] sm:text-xs font-bold transition-all focus:outline-none cursor-pointer ${
                                   isOccupied 
                                     ? 'bg-gray-200 text-gray-400 border border-gray-200 cursor-not-allowed' 
                                     : isSelected 
@@ -370,12 +393,12 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
                         </div>
 
                         {/* Aisle 2 (Row Number) */}
-                        <div className="w-5 text-center text-xs font-mono font-bold text-slate-500">
+                        <div className="w-4 sm:w-5 text-center text-xs font-mono font-bold text-slate-500">
                           {rowNum}
                         </div>
 
                         {/* Right Block (2 seats: H, K) */}
-                        <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+                        <div className="grid grid-cols-2 gap-1 sm:gap-1.5">
                           {RIGHT_COLUMNS.map((col) => {
                             const seatId = `${rowNum}${col}`;
                             const isOccupied = occupiedSeats.has(seatId);
@@ -385,7 +408,7 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
                                 key={seatId}
                                 disabled={isOccupied}
                                 onClick={() => setSelectedSeat(seatId)}
-                                className={`w-9 sm:w-10 h-10 sm:h-11 rounded-lg font-mono text-xs font-bold transition-all focus:outline-none cursor-pointer ${
+                                className={`w-8 sm:w-10 h-9 sm:h-11 rounded-lg font-mono text-[11px] sm:text-xs font-bold transition-all focus:outline-none cursor-pointer ${
                                   isOccupied 
                                     ? 'bg-gray-200 text-gray-400 border border-gray-200 cursor-not-allowed' 
                                     : isSelected 
@@ -418,9 +441,27 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
             
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-xs space-y-4">
               <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-gray-200 pb-3">
-                <h2 className="text-sm font-bold text-slate-900">
-                  登録済みフライト一覧
-                </h2>
+                <div className="space-y-1">
+                  <h2 className="text-sm font-bold text-slate-900">
+                    登録済みフライト一覧
+                  </h2>
+                  {displayedManageFlights.some(f => isFlightPassed(f)) && (
+                    <div className="flex items-center space-x-2 pt-1">
+                      <button
+                        onClick={handleMarkPassedDeparted}
+                        className="text-[11px] font-medium text-slate-700 bg-gray-100 hover:bg-gray-200 border border-gray-300 px-2.5 py-1 rounded cursor-pointer transition-colors"
+                      >
+                        予定時刻超過便を「出発済」に更新
+                      </button>
+                      <button
+                        onClick={handleDeletePassedFlights}
+                        className="text-[11px] font-medium text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-2.5 py-1 rounded cursor-pointer transition-colors"
+                      >
+                        予定超過便を一括消去
+                      </button>
+                    </div>
+                  )}
+                </div>
                 
                 <div className="flex items-center space-x-3 text-xs">
                   {availableDates.length > 0 && (
@@ -463,42 +504,52 @@ export default function StaffTicketing({ onLogout }: StaffTicketingProps) {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
-                    {displayedManageFlights.map((f) => (
-                      <tr key={f.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-4 py-3 whitespace-nowrap font-mono text-slate-600">
-                          {f.departureDate}
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap font-mono font-bold text-slate-900 tabular-nums">
-                          {f.departureTime}
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap font-mono font-bold text-slate-800">
-                          {f.flightNumber}
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-slate-800">{f.destination}</td>
-                        <td className="px-4 py-3 whitespace-nowrap font-mono text-slate-700">{f.gate}</td>
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <select 
-                            className="bg-white border border-gray-300 text-slate-800 rounded px-2 py-1 text-xs focus:outline-none focus:border-slate-900 font-medium"
-                            value={f.status}
-                            onChange={(e) => updateStatus(f.id, e.target.value as any)}
-                          >
-                            <option value="Scheduled">定刻</option>
-                            <option value="Boarding">搭乗中</option>
-                            <option value="Departed">出発済</option>
-                            <option value="Delayed">遅延</option>
-                          </select>
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-right">
-                          <button 
-                            onClick={() => handleDeleteFlight(f.id, f.flightNumber)}
-                            className="text-slate-400 hover:text-rose-600 p-1 transition-colors cursor-pointer"
-                            title="この便を削除"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                    {displayedManageFlights.map((f) => {
+                      const passed = isFlightPassed(f);
+                      return (
+                        <tr key={f.id} className={`transition-colors ${passed ? 'bg-gray-50/70' : 'hover:bg-gray-50'}`}>
+                          <td className="px-4 py-3 whitespace-nowrap font-mono text-slate-600">
+                            {f.departureDate}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap font-mono font-bold text-slate-900 tabular-nums">
+                            {f.departureTime}
+                            {passed && (
+                              <span className="ml-1.5 text-[10px] text-slate-500 font-sans font-normal bg-gray-200 px-1 py-0.5 rounded">
+                                予定超過
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap font-mono font-bold text-slate-800">
+                            {f.flightNumber}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-slate-800">{f.destination}</td>
+                          <td className="px-4 py-3 whitespace-nowrap font-mono text-slate-700">{f.gate}</td>
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <select 
+                              className={`bg-white border rounded px-2 py-1 text-xs focus:outline-none font-medium ${
+                                f.status === 'Departed' ? 'border-gray-200 text-slate-500 bg-gray-50' : 'border-gray-300 text-slate-800 focus:border-slate-900'
+                              }`}
+                              value={f.status}
+                              onChange={(e) => updateStatus(f.id, e.target.value as any)}
+                            >
+                              <option value="Scheduled">定刻</option>
+                              <option value="Boarding">搭乗中</option>
+                              <option value="Departed">出発済</option>
+                              <option value="Delayed">遅延</option>
+                            </select>
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-right">
+                            <button 
+                              onClick={() => handleDeleteFlight(f.id, f.flightNumber)}
+                              className="text-slate-400 hover:text-rose-600 p-1 transition-colors cursor-pointer"
+                              title="この便を削除"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                     {displayedManageFlights.length === 0 && (
                       <tr>
                         <td colSpan={7} className="px-4 py-6 text-center text-slate-500">

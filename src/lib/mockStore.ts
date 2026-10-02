@@ -132,6 +132,12 @@ export const addMockFlight = (flight: Flight) => {
   notifyListeners();
 };
 
+export const addMockFlights = (flightsToAdd: Flight[]) => {
+  mockFlights.push(...flightsToAdd);
+  persist();
+  notifyListeners();
+};
+
 export const deleteMockFlight = (flightId: string) => {
   mockFlights = mockFlights.filter(f => f.id !== flightId);
   mockTickets = mockTickets.filter(t => t.flightId !== flightId);

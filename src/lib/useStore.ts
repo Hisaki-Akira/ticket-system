@@ -9,6 +9,7 @@ import {
   subscribeToMockData, 
   updateMockFlightStatus, 
   addMockFlight, 
+  addMockFlights,
   deleteMockFlight,
   resetMockToDefault,
   getTodayDateStr,
@@ -147,6 +148,36 @@ export function useStore() {
     return newFlight;
   };
 
+  const addFlights = async (flightDataList: Array<Omit<Flight, 'id' | 'totalSeats' | 'seats'>>) => {
+    const SEAT_COLUMNS = ['A', 'C', 'D', 'E', 'F', 'G', 'H', 'K'];
+    const ROWS = 3;
+    const initialSeats = [];
+    for (let r = 1; r <= ROWS; r++) {
+      for (const c of SEAT_COLUMNS) {
+        initialSeats.push({ seatId: `${r}${c}`, isBooked: false });
+      }
+    }
+
+    const newFlights: Flight[] = flightDataList.map((flightData, index) => ({
+      id: Math.random().toString(36).substr(2, 9) + index,
+      ...flightData,
+      totalSeats: 24,
+      seats: [...initialSeats]
+    }));
+
+    if (!isFirebaseConfigured) {
+      addMockFlights(newFlights);
+      return newFlights;
+    }
+
+    if (db) {
+      for (const f of newFlights) {
+        await setDoc(doc(db, 'flights', f.id), f);
+      }
+    }
+    return newFlights;
+  };
+
   const deleteFlight = async (flightId: string) => {
     if (!isFirebaseConfigured) {
       deleteMockFlight(flightId);
@@ -208,6 +239,7 @@ export function useStore() {
     clearAllTickets,
     updateStatus,
     addFlight,
+    addFlights,
     deleteFlight,
     deletePassedFlights,
     markPassedFlightsDeparted,

@@ -11,7 +11,10 @@ import {
   addMockFlight, 
   deleteMockFlight,
   resetMockToDefault,
-  getTodayDateStr
+  getTodayDateStr,
+  deletePassedMockFlights,
+  markPassedMockFlightsAsDeparted,
+  isFlightPassed
 } from './mockStore';
 import { collection, onSnapshot, doc, setDoc, deleteDoc, getDocs } from 'firebase/firestore';
 
@@ -155,6 +158,42 @@ export function useStore() {
     }
   };
 
+  const deletePassedFlights = async (dateStr?: string) => {
+    if (!isFirebaseConfigured) {
+      return deletePassedMockFlights(dateStr);
+    }
+    if (db) {
+      const now = new Date();
+      const targetFlights = flights.filter(f => {
+        if (dateStr && f.departureDate !== dateStr) return false;
+        return isFlightPassed(f, now);
+      });
+      for (const f of targetFlights) {
+        await deleteDoc(doc(db, 'flights', f.id));
+      }
+      return targetFlights.length;
+    }
+    return 0;
+  };
+
+  const markPassedFlightsDeparted = async (dateStr?: string) => {
+    if (!isFirebaseConfigured) {
+      return markPassedMockFlightsAsDeparted(dateStr);
+    }
+    if (db) {
+      const now = new Date();
+      const targetFlights = flights.filter(f => {
+        if (dateStr && f.departureDate !== dateStr) return false;
+        return isFlightPassed(f, now) && f.status !== 'Departed';
+      });
+      for (const f of targetFlights) {
+        await setDoc(doc(db, 'flights', f.id), { status: 'Departed' }, { merge: true });
+      }
+      return targetFlights.length;
+    }
+    return 0;
+  };
+
   const resetData = async () => {
     if (!isFirebaseConfigured) {
       resetMockToDefault();
@@ -170,6 +209,8 @@ export function useStore() {
     updateStatus,
     addFlight,
     deleteFlight,
+    deletePassedFlights,
+    markPassedFlightsDeparted,
     resetData,
     isFirebaseConfigured
   };
